@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InboxController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
 
@@ -65,4 +66,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/wilayah/{id}', [WilayahController::class, 'update'])->name('wilayah.update');
         Route::delete('/wilayah/{id}', [WilayahController::class, 'destroy'])->name('wilayah.destroy');
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-21: Manajemen Pesan Internal / Inbox Faskes (Briantara Pradhipta)
+    |--------------------------------------------------------------------------
+    | Semua pengguna terautentikasi dapat membaca dan mengirim pesan internal.
+    */
+    Route::get('/inbox', [InboxController::class, 'index'])->name('inbox.index');
+    Route::post('/inbox', [InboxController::class, 'store'])->name('inbox.store');
+    Route::put('/inbox/{id}', [InboxController::class, 'update'])->name('inbox.update');
+    Route::delete('/inbox/{id}', [InboxController::class, 'destroy'])->name('inbox.destroy');
 });

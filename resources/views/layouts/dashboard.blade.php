@@ -72,6 +72,34 @@
                         </span>
                     </div>
                 @endif
+
+                <!-- Navigation Menu Links -->
+                <nav class="hidden lg:flex items-center gap-1 ml-6 pl-6 border-l border-slate-200 text-xs">
+                    <a
+                        href="{{ route('dashboard') }}"
+                        class="px-3 py-1.5 rounded-lg font-medium transition {{ request()->routeIs('*.dashboard') ? 'bg-teal-50 text-teal-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}"
+                    >
+                        Dashboard
+                    </a>
+                    <a
+                        href="{{ route('wilayah.index') }}"
+                        class="px-3 py-1.5 rounded-lg font-medium transition {{ request()->routeIs('wilayah.*') ? 'bg-teal-50 text-teal-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}"
+                    >
+                        Data Wilayah
+                    </a>
+                    <a
+                        href="{{ route('inbox.index') }}"
+                        class="px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 {{ request()->routeIs('inbox.*') ? 'bg-teal-50 text-teal-700 font-bold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}"
+                    >
+                        <span>Pesan Internal</span>
+                        @php $unreadNav = auth()->user()->unreadInboxCount(); @endphp
+                        @if ($unreadNav > 0)
+                            <span class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-teal-600 text-white">
+                                {{ $unreadNav }}
+                            </span>
+                        @endif
+                    </a>
+                </nav>
             </div>
 
             <!-- User Menu & Logout Action -->

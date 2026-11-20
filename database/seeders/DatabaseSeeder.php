@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             WilayahSeeder::class,
             UserSeeder::class,
+            InboxSeeder::class,
         ]);
     }
 }
