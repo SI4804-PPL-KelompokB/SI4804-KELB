@@ -110,19 +110,70 @@
         </div>
     </div>
 
-    <!-- Banner Penjelasan Kepatuhan Instruksi -->
-    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-slate-700">
-        <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <!-- Menu Fitur Penyedia Obat -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <svg class="w-5 h-5 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
-            </div>
-            <div>
-                <h4 class="text-sm font-bold text-slate-900">Catatan Implementasi Fitur Sesuai Permintaan</h4>
-                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                    Sesuai instruksi Anda: <em>"saya hanya ingin anda untuk membuat fitur login dan logout tanpa mengerjakan apapun yang lainnya"</em>, modul ini berfokus secara eksklusif pada pembuktian alur autentikasi <strong>Login</strong> dan <strong>Logout</strong> pengguna.
-                </p>
+                Menu Fitur Penyedia Obat
+            </h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {{-- Kartu Menu: Kelola Kendaraan / Kurir --}}
+                <a href="{{ route('penyedia.kendaraan.index') }}"
+                   class="group p-5 rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-200 transition">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 group-hover:text-sky-800 transition">Data Kendaraan / Kurir</h4>
+                            <p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                                Kelola armada pengiriman: tambah, lihat, edit plat nomor, dan hapus kurir/ambulans.
+                            </p>
+                            <span class="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold text-sky-600 uppercase tracking-wider">
+                                PBI-14
+                                <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                {{-- Placeholder fitur lain yang belum aktif --}}
+                <div class="p-5 rounded-xl border border-slate-100 bg-slate-50/50 opacity-60">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-500">Stok Obat Gudang</h4>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Fitur belum tersedia pada sprint ini.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-5 rounded-xl border border-slate-100 bg-slate-50/50 opacity-60">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-500">Riwayat Distribusi</h4>
+                            <p class="text-[11px] text-slate-400 mt-0.5">Fitur belum tersedia pada sprint ini.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
