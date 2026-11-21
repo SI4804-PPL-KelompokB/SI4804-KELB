@@ -220,19 +220,15 @@
 
             {{-- Tombol Aksi --}}
             <div class="flex items-center justify-between gap-3 mt-8 pt-6 border-t border-slate-100">
-                {{-- Tombol Hapus --}}
-                <form action="{{ route('penyedia.kendaraan.destroy', $kendaraan) }}" method="POST" class="inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            onclick="return confirm('Apakah Anda yakin ingin menghapus data kendaraan/kurir \'{{ $kendaraan->nama_kurir }}\'? Tindakan ini tidak dapat dibatalkan.')"
-                            class="px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-xs sm:text-sm font-semibold border border-red-200 transition flex items-center gap-2 cursor-pointer">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Hapus Kendaraan
-                    </button>
-                </form>
+                {{-- Tombol Hapus (Memicu form terpisah di luar agar tidak nested form) --}}
+                <button type="button"
+                        onclick="if(confirm('Apakah Anda yakin ingin menghapus data kendaraan/kurir \'{{ $kendaraan->nama_kurir }}\'? Tindakan ini tidak dapat dibatalkan.')) { document.getElementById('form-delete-kendaraan').submit(); }"
+                        class="px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-xs sm:text-sm font-semibold border border-red-200 transition flex items-center gap-2 cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Hapus Kendaraan
+                </button>
 
                 <div class="flex items-center gap-3">
                     <a href="{{ route('penyedia.kendaraan.index') }}"
@@ -248,6 +244,12 @@
                     </button>
                 </div>
             </div>
+        </form>
+
+        {{-- Form Hapus Terpisah (Diluar form edit untuk mencegah nested form) --}}
+        <form id="form-delete-kendaraan" action="{{ route('penyedia.kendaraan.destroy', $kendaraan) }}" method="POST" class="hidden">
+            @csrf
+            @method('DELETE')
         </form>
     </div>
 </div>
