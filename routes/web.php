@@ -2,14 +2,16 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes - MedStock.id
 |--------------------------------------------------------------------------
-| Sesuai instruksi pengguna: Hanya mengimplementasikan fitur Login dan Logout
-| berdasarkan Kebutuhan F1, NF1, Class Diagram User, dan Mockup 4.5.
+| Autentikasi pengguna (Login/Logout) dan fitur-fitur PBI yang telah
+| diimplementasikan (PBI-01: Manajemen Data Wilayah).
 */
 
 // Redirect root ke dashboard jika login, atau ke formulir login jika belum
@@ -49,4 +51,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-14: CRUD Data Kendaraan / Kurir Internal (Khusus Penyedia)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:penyedia')->prefix('penyedia')->name('penyedia.')->group(function () {
+        Route::get('/kendaraan', [KendaraanController::class, 'index'])->name('kendaraan.index');
+        Route::get('/kendaraan/create', [KendaraanController::class, 'create'])->name('kendaraan.create');
+        Route::post('/kendaraan', [KendaraanController::class, 'store'])->name('kendaraan.store');
+        Route::get('/kendaraan/{kendaraan}/edit', [KendaraanController::class, 'edit'])->name('kendaraan.edit');
+        Route::put('/kendaraan/{kendaraan}', [KendaraanController::class, 'update'])->name('kendaraan.update');
+        Route::delete('/kendaraan/{kendaraan}', [KendaraanController::class, 'destroy'])->name('kendaraan.destroy');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-01: Manajemen Data Wilayah
+    |--------------------------------------------------------------------------
+    | READ  → semua role yang terautentikasi
+    | WRITE → hanya admin dan dinkes
+    */
+    Route::get('/wilayah', [WilayahController::class, 'index'])->name('wilayah.index');
+
+    Route::middleware('role:admin,dinkes')->group(function () {
+        Route::post('/wilayah', [WilayahController::class, 'store'])->name('wilayah.store');
+        Route::put('/wilayah/{id}', [WilayahController::class, 'update'])->name('wilayah.update');
+        Route::delete('/wilayah/{id}', [WilayahController::class, 'destroy'])->name('wilayah.destroy');
+    });
 });
