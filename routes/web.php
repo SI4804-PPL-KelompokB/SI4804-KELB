@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DrugCategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,4 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
+    
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
+        Route::resource('categories', DrugCategoryController::class)->except('show');
+        });
 });

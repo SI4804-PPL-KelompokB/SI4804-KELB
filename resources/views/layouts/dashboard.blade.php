@@ -42,18 +42,24 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <!-- Brand Logo -->
             <div class="flex items-center gap-3">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center shadow-sm">
+                
+                @php
+                    $isAdmin = auth()->user()->hasRole('admin');
+                @endphp
+                <div class="flex items-center gap-2.5">
+                    <a href="{{ $isAdmin ? route('categories.index') : route('dashboard') }}"
+                       title="{{ $isAdmin ? 'Kelola Kategori Obat' : 'Dashboard' }}"
+                       class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center shadow-sm hover:from-emerald-600 hover:to-teal-600 transition">
                         <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                         </svg>
-                    </div>
-                    <div>
+                    </a>
+                    <a href="{{ route('dashboard') }}">
                         <span class="text-lg font-bold tracking-tight text-slate-900">
                             MedStock<span class="text-teal-600">.id</span>
                         </span>
-                    </div>
-                </a>
+                    </a>
+                </div>
 
                 <!-- Facility Badge / Title -->
                 @if (auth()->user()->faskes)
