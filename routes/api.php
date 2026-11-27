@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\InboxController;
+use App\Http\Controllers\Api\PenawaranController;
 use App\Http\Controllers\Api\PermintaanController;
 use App\Http\Controllers\Api\PermintaanItemController;
 use App\Http\Controllers\Api\WilayahController;
@@ -8,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes — MedStock.id
+| API Routes â€” MedStock.id
 |--------------------------------------------------------------------------
 | Seluruh endpoint di bawah menggunakan session-based authentication (guard web)
 | yang telah diaktifkan pada group 'api' di bootstrap/app.php.
@@ -45,7 +46,23 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/permintaan/{id}/items', [PermintaanItemController::class, 'store']);
         Route::put('/permintaan/items/{item_id}', [PermintaanItemController::class, 'update']);
+        Route::post('/permintaan/{id}/items', [PermintaanItemController::class, 'store']);
+        Route::put('/permintaan/items/{item_id}', [PermintaanItemController::class, 'update']);
         Route::delete('/permintaan/items/{item_id}', [PermintaanItemController::class, 'destroy']);
+    });
+
+    // =========================================================================
+    // PBI-09: Pencatatan Dokumen Penawaran Surplus
+    // =========================================================================
+    Route::middleware('role:faskes,dinkes,admin')->group(function () {
+        Route::get('/penawaran', [PenawaranController::class, 'index']);
+        Route::get('/penawaran/{id}', [PenawaranController::class, 'show']);
+    });
+
+    Route::middleware('role:faskes')->group(function () {
+        Route::post('/penawaran', [PenawaranController::class, 'store']);
+        Route::put('/penawaran/{id}', [PenawaranController::class, 'update']);
+        Route::delete('/penawaran/{id}', [PenawaranController::class, 'destroy']);
     });
 });
 

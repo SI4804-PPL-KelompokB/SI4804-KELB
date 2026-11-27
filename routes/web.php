@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DrugCategoryController;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\PenawaranController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
@@ -82,8 +83,8 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | PBI-01: Manajemen Data Wilayah
     |--------------------------------------------------------------------------
-    | READ  → semua role yang terautentikasi
-    | WRITE → hanya admin dan dinkes
+    | READ  â†’ semua role yang terautentikasi
+    | WRITE â†’ hanya admin dan dinkes
     */
     Route::get('/wilayah', [WilayahController::class, 'index'])->name('wilayah.index');
 
@@ -103,6 +104,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/permintaan', [PermintaanController::class, 'index'])
         ->middleware('role:faskes,dinkes,admin')
         ->name('permintaan.index');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-09: Pencatatan Dokumen Penawaran Surplus (Antarmuka Web)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/penawaran', [PenawaranController::class, 'index'])
+        ->middleware('role:faskes,dinkes,admin')
+        ->name('penawaran.index');
 
     /*
     |--------------------------------------------------------------------------
