@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\InboxController;
 use App\Http\Controllers\Api\PermintaanController;
+use App\Http\Controllers\Api\PermintaanItemController;
 use App\Http\Controllers\Api\WilayahController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,11 +20,9 @@ Route::middleware('auth')->group(function () {
     // =========================================================================
     // PBI-01: Manajemen Data Wilayah / Zona Faskes
     // =========================================================================
-    // Read: semua role yang terautentikasi (admin, dinkes, faskes, penyedia)
     Route::get('/wilayah', [WilayahController::class, 'index']);
     Route::get('/wilayah/{id}', [WilayahController::class, 'show']);
 
-    // Write: hanya admin dan dinkes
     Route::middleware('role:admin,dinkes')->group(function () {
         Route::post('/wilayah', [WilayahController::class, 'store']);
         Route::put('/wilayah/{id}', [WilayahController::class, 'update']);
@@ -31,19 +30,22 @@ Route::middleware('auth')->group(function () {
     });
 
     // =========================================================================
-    // PBI-07: Pencatatan Permintaan Darurat Faskes
+    // PBI-07 & PBI-08: Permintaan Darurat Faskes & Detail Item Obat
     // =========================================================================
-    // Read: faskes (milik sendiri), dinkes & admin (lintas fasilitas); penyedia ditolak (403)
     Route::middleware('role:faskes,dinkes,admin')->group(function () {
         Route::get('/permintaan', [PermintaanController::class, 'index']);
         Route::get('/permintaan/{id}', [PermintaanController::class, 'show']);
+        Route::get('/permintaan/{id}/items', [PermintaanItemController::class, 'index']);
     });
 
-    // Write: hanya role faskes (membuat, mengubah urgensi, dan menghapus permintaan milik sendiri)
     Route::middleware('role:faskes')->group(function () {
         Route::post('/permintaan', [PermintaanController::class, 'store']);
         Route::put('/permintaan/{id}', [PermintaanController::class, 'update']);
         Route::delete('/permintaan/{id}', [PermintaanController::class, 'destroy']);
+
+        Route::post('/permintaan/{id}/items', [PermintaanItemController::class, 'store']);
+        Route::put('/permintaan/items/{item_id}', [PermintaanItemController::class, 'update']);
+        Route::delete('/permintaan/items/{item_id}', [PermintaanItemController::class, 'destroy']);
     });
 });
 
@@ -51,13 +53,6 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 | PBI-21: Manajemen Pesan Internal / Inbox Faskes (Briantara Pradhipta)
 |--------------------------------------------------------------------------
-| Sesuai Proposal Tabel 5.1 & F22:
-|   C: Kirim pesan baru          (POST /api/inbox)
-|   R: Lihat daftar inbox        (GET  /api/inbox)
-|   R: Lihat detail pesan        (GET  /api/inbox/{id})
-|   U: Tandai read/unread        (PUT  /api/inbox/{id})
-|   D: Hapus pesan               (DELETE /api/inbox/{id})
-|   Helper: Daftar penerima      (GET  /api/inbox/recipients)
 */
 Route::middleware('auth')->group(function () {
     Route::get('/inbox', [InboxController::class, 'index']);
