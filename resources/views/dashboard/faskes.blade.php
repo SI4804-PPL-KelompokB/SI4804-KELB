@@ -4,29 +4,86 @@
 
 @section('dashboard_content')
 <div class="space-y-6">
-    <!-- Top Greeting Banner (Sesuai Mockup 4.6) -->
-    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs relative overflow-hidden">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- Operational Welcome Banner -->
+    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-2xs relative overflow-hidden">
+        <div class="absolute inset-y-0 right-0 w-72 bg-gradient-to-l from-teal-50/90 to-transparent pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative">
             <div>
                 <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-teal-600 mb-1">
                     <span>{{ $user->faskes->nama_faskes ?? 'Fasilitas Kesehatan' }}</span>
-                    <span>•</span>
-                    <span class="text-slate-400">Kota Bandung</span>
+                    <span>&bull;</span>
+                    <span class="text-slate-400">{{ $user->faskes->kota ?? 'Kota Bandung' }}</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                     Selamat datang, {{ $user->name }}
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                    Anda berhasil masuk melalui otentikasi peran <span class="font-semibold text-teal-700">Fasilitas Kesehatan (Faskes)</span>.
+                    Pusat kendali operasional <span class="font-semibold text-teal-700">Fasilitas Kesehatan (Faskes)</span> untuk pencatatan kebutuhan obat darurat.
                 </p>
+            </div>
+
+            <div class="flex items-center gap-3 shrink-0">
+                <a
+                    href="{{ route('permintaan.index') }}"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow transition"
+                >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <span>Kelola Permintaan Darurat</span>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Informasi Status Autentikasi Pengguna & Sesi Aktif -->
+    <!-- Operational Module Hub -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a
+            href="{{ route('permintaan.index') }}"
+            class="group bg-white rounded-2xl p-6 border border-slate-200/80 hover:border-teal-300 shadow-2xs hover:shadow-sm transition flex items-start gap-4"
+        >
+            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 group-hover:bg-teal-600 group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-2">
+                    <h2 class="text-base font-bold text-slate-900 group-hover:text-teal-700 transition">Permintaan Darurat</h2>
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">Aktif</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Buat pengajuan permintaan obat darurat baru, pantau riwayat permintaan fasilitas Anda, dan ubah tingkat urgensi sebelum diproses.
+                </p>
+            </div>
+        </a>
+
+        <a
+            href="{{ route('wilayah.index') }}"
+            class="group bg-white rounded-2xl p-6 border border-slate-200/80 hover:border-teal-300 shadow-2xs hover:shadow-sm transition flex items-start gap-4"
+        >
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-teal-600 group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-2">
+                    <h2 class="text-base font-bold text-slate-900 group-hover:text-teal-700 transition">Manajemen Wilayah</h2>
+                    <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-semibold">Lihat Data</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Lihat daftar pembagian wilayah dan zona fasilitas kesehatan di Kota Bandung.
+                </p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Informasi Akun, Profil Fasilitas & Keamanan Sesi -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Kartu 1: Profil & Akun -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xs">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Informasi Akun Terautentikasi</h3>
             <div class="space-y-3 text-xs sm:text-sm">
                 <div>
@@ -51,7 +108,7 @@
         </div>
 
         <!-- Kartu 2: Fasilitas Kesehatan Terhubung -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xs">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Profil Fasilitas Terkait</h3>
             @if($user->faskes)
                 <div class="space-y-3 text-xs sm:text-sm">
@@ -65,7 +122,7 @@
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[11px]">Alamat:</span>
-                        <span class="text-slate-700">{{ $user->faskes->alamat }}</span>
+                        <span class="text-slate-700">{{ $user->faskes->alamat ?? '-' }}</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[11px]">Wilayah:</span>
@@ -73,13 +130,13 @@
                     </div>
                 </div>
             @else
-                <p class="text-xs text-slate-400">Tidak terikat pada entitas faskes spesifik.</p>
+                <p class="text-xs text-amber-600 font-medium">Akun belum terhubung pada entitas fasilitas kesehatan.</p>
             @endif
         </div>
 
         <!-- Kartu 3: Status Sesi & Keamanan -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Sesi & Keamanan (NF1)</h3>
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xs">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Sesi &amp; Keamanan (NF1)</h3>
             <div class="space-y-3 text-xs sm:text-sm">
                 <div>
                     <span class="text-slate-400 block text-[11px]">Waktu Login Terakhir:</span>
@@ -89,12 +146,12 @@
                     <span class="text-slate-400 block text-[11px]">Status Akun:</span>
                     <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Aktif & Terverifikasi
+                        Aktif &amp; Terverifikasi
                     </span>
                 </div>
                 <div>
-                    <span class="text-slate-400 block text-[11px]">Proteksi Hak Akses:</span>
-                    <span class="text-slate-600">Hanya dapat mengakses area Faskes</span>
+                    <span class="text-slate-400 block text-[11px]">Isolasi Data Fasilitas:</span>
+                    <span class="text-slate-600">Terkunci pada fasilitas kesehatan Anda</span>
                 </div>
             </div>
         </div>

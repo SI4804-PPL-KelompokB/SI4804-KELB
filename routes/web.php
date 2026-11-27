@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,8 +11,8 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Web Routes - MedStock.id
 |--------------------------------------------------------------------------
-| Autentikasi pengguna (Login/Logout) dan fitur-fitur PBI yang telah
-| diimplementasikan (PBI-01: Manajemen Data Wilayah).
+| Autentikasi pengguna (Login/Logout) dan antarmuka Web untuk PBI yang telah
+| diimplementasikan (PBI-01: Wilayah, PBI-07: Permintaan Darurat, PBI-14: Kendaraan).
 */
 
 // Redirect root ke dashboard jika login, atau ke formulir login jika belum
@@ -80,4 +81,15 @@ Route::middleware('auth')->group(function () {
         Route::put('/wilayah/{id}', [WilayahController::class, 'update'])->name('wilayah.update');
         Route::delete('/wilayah/{id}', [WilayahController::class, 'destroy'])->name('wilayah.destroy');
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-07: Pencatatan Permintaan Darurat Faskes (Antarmuka Web)
+    |--------------------------------------------------------------------------
+    | Selaras dengan otorisasi API: faskes, dinkes, dan admin dapat mengakses
+    | halaman; penyedia ditolak (403). Operasi tulis dilakukan via /api/permintaan.
+    */
+    Route::get('/permintaan', [PermintaanController::class, 'index'])
+        ->middleware('role:faskes,dinkes,admin')
+        ->name('permintaan.index');
 });

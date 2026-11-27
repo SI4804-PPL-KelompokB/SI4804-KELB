@@ -14,9 +14,13 @@ class KendaraanTest extends TestCase
     use RefreshDatabase;
 
     protected User $penyediaUser;
+
     protected User $penyediaLain;
+
     protected User $dinkesUser;
+
     protected Faskes $faskesPenyedia;
+
     protected Faskes $faskesLain;
 
     protected function setUp(): void

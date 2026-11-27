@@ -47,7 +47,7 @@ class KendaraanController extends Controller
 
         $validated = $request->validate([
             'nama_kurir' => ['required', 'string', 'max:255'],
-            'jenis_kendaraan' => ['required', 'string', 'in:' . implode(',', Kendaraan::JENIS_KENDARAAN)],
+            'jenis_kendaraan' => ['required', 'string', 'in:'.implode(',', Kendaraan::JENIS_KENDARAAN)],
             'plat_nomor' => ['required', 'string', 'max:20', 'unique:kendaraan,plat_nomor'],
             'nomor_telepon' => ['nullable', 'string', 'max:20'],
             'status' => ['required', 'string', 'in:aktif,nonaktif,maintenance'],
@@ -67,7 +67,7 @@ class KendaraanController extends Controller
         Kendaraan::create($validated);
 
         return redirect()->route('penyedia.kendaraan.index')
-            ->with('success', 'Data kendaraan/kurir "' . $validated['nama_kurir'] . '" berhasil ditambahkan.');
+            ->with('success', 'Data kendaraan/kurir "'.$validated['nama_kurir'].'" berhasil ditambahkan.');
     }
 
     /**
@@ -104,8 +104,8 @@ class KendaraanController extends Controller
 
         $validated = $request->validate([
             'nama_kurir' => ['required', 'string', 'max:255'],
-            'jenis_kendaraan' => ['required', 'string', 'in:' . implode(',', Kendaraan::JENIS_KENDARAAN)],
-            'plat_nomor' => ['required', 'string', 'max:20', 'unique:kendaraan,plat_nomor,' . $kendaraan->id],
+            'jenis_kendaraan' => ['required', 'string', 'in:'.implode(',', Kendaraan::JENIS_KENDARAAN)],
+            'plat_nomor' => ['required', 'string', 'max:20', 'unique:kendaraan,plat_nomor,'.$kendaraan->id],
             'nomor_telepon' => ['nullable', 'string', 'max:20'],
             'status' => ['required', 'string', 'in:aktif,nonaktif,maintenance'],
             'keterangan' => ['nullable', 'string', 'max:500'],
@@ -122,7 +122,7 @@ class KendaraanController extends Controller
         $kendaraan->update($validated);
 
         return redirect()->route('penyedia.kendaraan.index')
-            ->with('success', 'Data kendaraan/kurir "' . $validated['nama_kurir'] . '" berhasil diperbarui.');
+            ->with('success', 'Data kendaraan/kurir "'.$validated['nama_kurir'].'" berhasil diperbarui.');
     }
 
     /**
@@ -143,6 +143,6 @@ class KendaraanController extends Controller
         $kendaraan->delete();
 
         return redirect()->route('penyedia.kendaraan.index')
-            ->with('success', 'Data kendaraan/kurir "' . $namaKurir . '" berhasil dihapus dari sistem.');
+            ->with('success', 'Data kendaraan/kurir "'.$namaKurir.'" berhasil dihapus dari sistem.');
     }
 }
