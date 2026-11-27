@@ -41,7 +41,7 @@ class DrugCategoryController extends Controller
     public function update(Request $request, DrugCategory $category)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:100|unique:drug_categories,name,' . $category->id,
+            'name' => 'required|string|max:100|unique:drug_categories,name,'.$category->id,
         ]);
 
         $category->update($data);

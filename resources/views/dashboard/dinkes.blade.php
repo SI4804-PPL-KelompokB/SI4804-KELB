@@ -5,44 +5,79 @@
 @section('dashboard_content')
 <div class="space-y-6">
     <!-- Top Greeting Banner -->
-    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs relative overflow-hidden">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-2xs relative overflow-hidden">
+        <div class="absolute inset-y-0 right-0 w-72 bg-gradient-to-l from-emerald-50/90 to-transparent pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative">
             <div>
                 <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-600 mb-1">
                     <span>Dinas Kesehatan Kota Bandung</span>
-                    <span>•</span>
+                    <span>&bull;</span>
                     <span class="text-slate-400">Pusat Koordinasi Wilayah</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                     Selamat datang, {{ $user->name }}
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                    Anda berhasil masuk melalui otentikasi peran <span class="font-semibold text-emerald-700">Dinas Kesehatan (Dinkes)</span>.
+                    Pusat koordinasi <span class="font-semibold text-emerald-700">Dinas Kesehatan (Dinkes)</span> untuk pengelolaan wilayah dan pengawasan distribusi obat.
                 </p>
             </div>
 
-            <!-- Tombol Keluar Langsung di Banner -->
-            <div class="flex items-center gap-3">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button
-                        type="submit"
-                        onclick="return confirm('Apakah Anda yakin ingin keluar?')"
-                        class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow transition flex items-center gap-2 cursor-pointer"
-                    >
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        <span>Uji Keluar (Logout)</span>
-                    </button>
-                </form>
+            <div class="flex items-center gap-3 shrink-0">
+                <a
+                    href="{{ route('wilayah.index') }}"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow transition"
+                >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Kelola Manajemen Wilayah</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operational Module Hub -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a
+            href="{{ route('wilayah.index') }}"
+            class="group bg-white rounded-2xl p-6 border border-slate-200/80 hover:border-teal-300 shadow-2xs hover:shadow-sm transition flex items-start gap-4"
+        >
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-teal-600 group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-2">
+                    <h2 class="text-base font-bold text-slate-900 group-hover:text-teal-700 transition">Manajemen Wilayah</h2>
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">Aktif</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Atur pembagian wilayah dan zona fasilitas kesehatan untuk mendukung koordinasi distribusi darurat.
+                </p>
+            </div>
+        </a>
+
+        <div class="bg-slate-50/80 rounded-2xl p-6 border border-dashed border-slate-200 flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-base font-bold text-slate-700">Koordinasi &amp; Rekomendasi Distribusi</h2>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Antarmuka pemantauan permintaan lintas faskes dan mesin rekomendasi distribusi (PBI-12) akan ditambahkan pada tahap berikutnya.
+                </p>
             </div>
         </div>
     </div>
 
     <!-- Informasi Status Autentikasi Pengguna & Sesi Aktif -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xs">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Informasi Akun Terautentikasi</h3>
             <div class="space-y-3 text-xs sm:text-sm">
                 <div>
@@ -66,7 +101,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xs">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Karakteristik Otoritas Dinkes</h3>
             <div class="space-y-3 text-xs sm:text-sm">
                 <div>
@@ -84,8 +119,8 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Sesi & Keamanan (NF1)</h3>
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xs">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Sesi &amp; Keamanan (NF1)</h3>
             <div class="space-y-3 text-xs sm:text-sm">
                 <div>
                     <span class="text-slate-400 block text-[11px]">Waktu Login Terakhir:</span>
@@ -95,30 +130,13 @@
                     <span class="text-slate-400 block text-[11px]">Status Akun:</span>
                     <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Aktif & Terverifikasi
+                        Aktif &amp; Terverifikasi
                     </span>
                 </div>
                 <div>
                     <span class="text-slate-400 block text-[11px]">Proteksi Hak Akses:</span>
                     <span class="text-slate-600">Hanya dapat mengakses area Dinas Kesehatan</span>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Banner Penjelasan Kepatuhan Instruksi -->
-    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-slate-700">
-        <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <div>
-                <h4 class="text-sm font-bold text-slate-900">Catatan Implementasi Fitur Sesuai Permintaan</h4>
-                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                    Sesuai instruksi spesifik Anda: <em>"saya hanya ingin anda untuk membuat fitur login dan logout tanpa mengerjakan apapun yang lainnya"</em>, sistem hanya memproses autentikasi <strong>Login</strong> dan <strong>Logout</strong>. Seluruh modul lain (PBI-01 s/d PBI-21) sengaja tidak dikerjakan sesuai batasan ruang lingkup yang Anda tetapkan.
-                </p>
             </div>
         </div>
     </div>

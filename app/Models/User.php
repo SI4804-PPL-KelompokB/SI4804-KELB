@@ -5,9 +5,9 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -64,6 +64,33 @@ class User extends Authenticatable
     }
 
     /**
+     * Relasi ke pesan masuk (inbox) yang diterima pengguna (PBI-21)
+     */
+    public function inboxReceived(): HasMany
+    {
+        return $this->hasMany(Inbox::class, 'penerima_id');
+    }
+
+    /**
+     * Relasi ke pesan keluar yang dikirim oleh pengguna (PBI-21)
+     */
+    public function inboxSent(): HasMany
+    {
+        return $this->hasMany(Inbox::class, 'pengirim_id');
+    }
+
+    /**
+     * Mendapatkan jumlah pesan yang belum dibaca pengguna (PBI-21)
+     */
+    public function unreadInboxCount(): int
+    {
+        return $this->inboxReceived()
+            ->where('deleted_by_penerima', false)
+            ->where('is_read', false)
+            ->count();
+    }
+
+    /**
      * Memeriksa apakah pengguna memiliki peran tertentu
      * Sesuai rancangan Class Diagram subbab 4.4: +hasRole(r)
      */
@@ -72,7 +99,8 @@ class User extends Authenticatable
         $currentRole = strtolower($this->role ?? '');
 
         if (is_array($roles)) {
-            $normalized = array_map(fn($r) => strtolower($r), $roles);
+            $normalized = array_map(fn ($r) => strtolower($r), $roles);
+
             return in_array($currentRole, $normalized, true);
         }
 

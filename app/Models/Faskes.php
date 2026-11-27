@@ -27,4 +27,20 @@ class Faskes extends Model
     {
         return $this->hasMany(User::class, 'faskes_id');
     }
+
+    /**
+     * Get the emergency requests submitted by this faskes.
+     */
+    public function permintaan(): HasMany
+    {
+        return $this->hasMany(Permintaan::class, 'faskes_id');
+    }
+
+    /**
+     * PBI-14: Get the kendaraan/kurir associated with this faskes.
+     */
+    public function kendaraan(): HasMany
+    {
+        return $this->hasMany(Kendaraan::class, 'faskes_id');
+    }
 }

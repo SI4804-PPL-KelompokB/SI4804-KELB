@@ -3,14 +3,18 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DrugCategoryController;
+use App\Http\Controllers\InboxController;
+use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\PermintaanController;
+use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes - MedStock.id
 |--------------------------------------------------------------------------
-| Sesuai instruksi pengguna: Hanya mengimplementasikan fitur Login dan Logout
-| berdasarkan Kebutuhan F1, NF1, Class Diagram User, dan Mockup 4.5.
+| Autentikasi pengguna (Login/Logout) dan antarmuka Web untuk PBI yang telah
+| diimplementasikan (PBI-01, PBI-04, PBI-07, PBI-14, PBI-21).
 */
 
 // Redirect root ke dashboard jika login, atau ke formulir login jika belum
@@ -50,8 +54,64 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
-    
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-04: CRUD Master Kategori Obat (Khusus Admin)
+    |--------------------------------------------------------------------------
+    */
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::resource('categories', DrugCategoryController::class)->except('show');
-        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-14: CRUD Data Kendaraan / Kurir Internal (Khusus Penyedia)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:penyedia')->prefix('penyedia')->name('penyedia.')->group(function () {
+        Route::get('/kendaraan', [KendaraanController::class, 'index'])->name('kendaraan.index');
+        Route::get('/kendaraan/create', [KendaraanController::class, 'create'])->name('kendaraan.create');
+        Route::post('/kendaraan', [KendaraanController::class, 'store'])->name('kendaraan.store');
+        Route::get('/kendaraan/{kendaraan}/edit', [KendaraanController::class, 'edit'])->name('kendaraan.edit');
+        Route::put('/kendaraan/{kendaraan}', [KendaraanController::class, 'update'])->name('kendaraan.update');
+        Route::delete('/kendaraan/{kendaraan}', [KendaraanController::class, 'destroy'])->name('kendaraan.destroy');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-01: Manajemen Data Wilayah
+    |--------------------------------------------------------------------------
+    | READ  → semua role yang terautentikasi
+    | WRITE → hanya admin dan dinkes
+    */
+    Route::get('/wilayah', [WilayahController::class, 'index'])->name('wilayah.index');
+
+    Route::middleware('role:admin,dinkes')->group(function () {
+        Route::post('/wilayah', [WilayahController::class, 'store'])->name('wilayah.store');
+        Route::put('/wilayah/{id}', [WilayahController::class, 'update'])->name('wilayah.update');
+        Route::delete('/wilayah/{id}', [WilayahController::class, 'destroy'])->name('wilayah.destroy');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-07: Pencatatan Permintaan Darurat Faskes (Antarmuka Web)
+    |--------------------------------------------------------------------------
+    | Selaras dengan otorisasi API: faskes, dinkes, dan admin dapat mengakses
+    | halaman; penyedia ditolak (403). Operasi tulis dilakukan via /api/permintaan.
+    */
+    Route::get('/permintaan', [PermintaanController::class, 'index'])
+        ->middleware('role:faskes,dinkes,admin')
+        ->name('permintaan.index');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-21: Manajemen Pesan Internal / Inbox Faskes (Briantara Pradhipta)
+    |--------------------------------------------------------------------------
+    | Semua pengguna terautentikasi dapat membaca dan mengirim pesan internal.
+    */
+    Route::get('/inbox', [InboxController::class, 'index'])->name('inbox.index');
+    Route::post('/inbox', [InboxController::class, 'store'])->name('inbox.store');
+    Route::put('/inbox/{id}', [InboxController::class, 'update'])->name('inbox.update');
+    Route::delete('/inbox/{id}', [InboxController::class, 'destroy'])->name('inbox.destroy');
 });

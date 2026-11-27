@@ -12,11 +12,21 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * Untuk permintaan API (expectsJson), mengembalikan JSON 401/403.
+     * Untuk permintaan web biasa, mengembalikan redirect sesuai peran.
+     *
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthenticated. Silakan masuk terlebih dahulu.',
+                ], 401);
+            }
+
             return redirect()->route('login')->with('error', 'Silakan masuk terlebih dahulu untuk mengakses sistem.');
         }
 
@@ -31,7 +41,15 @@ class RoleMiddleware
             return $next($request);
         }
 
-        // Jika tidak berhak, arahkan ke dashboard peran pengguna masing-masing
+        // Akses ditolak
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Akses ditolak: Anda tidak memiliki wewenang untuk melakukan operasi ini.',
+            ], 403);
+        }
+
+        // Untuk web: arahkan ke dashboard peran pengguna masing-masing
         $userRole = strtolower($user->role ?? '');
         $targetRoute = match ($userRole) {
             'admin' => 'admin.dashboard',
