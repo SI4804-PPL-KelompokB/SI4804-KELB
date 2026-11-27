@@ -25,8 +25,8 @@ class Inbox extends Model
     ];
 
     protected $casts = [
-        'is_read'             => 'boolean',
-        'read_at'             => 'datetime',
+        'is_read' => 'boolean',
+        'read_at' => 'datetime',
         'deleted_by_pengirim' => 'boolean',
         'deleted_by_penerima' => 'boolean',
     ];
@@ -84,13 +84,13 @@ class Inbox extends Model
 
         return $query->where(function (Builder $q) use ($keyword) {
             $q->where('subjek', 'like', "%{$keyword}%")
-              ->orWhere('isi', 'like', "%{$keyword}%")
-              ->orWhereHas('pengirim', function (Builder $sq) use ($keyword) {
-                  $sq->where('name', 'like', "%{$keyword}%");
-              })
-              ->orWhereHas('penerima', function (Builder $sq) use ($keyword) {
-                  $sq->where('name', 'like', "%{$keyword}%");
-              });
+                ->orWhere('isi', 'like', "%{$keyword}%")
+                ->orWhereHas('pengirim', function (Builder $sq) use ($keyword) {
+                    $sq->where('name', 'like', "%{$keyword}%");
+                })
+                ->orWhereHas('penerima', function (Builder $sq) use ($keyword) {
+                    $sq->where('name', 'like', "%{$keyword}%");
+                });
         });
     }
 
@@ -133,7 +133,7 @@ class Inbox extends Model
             $updated = true;
         }
 
-        if (!$updated) {
+        if (! $updated) {
             return false;
         }
 

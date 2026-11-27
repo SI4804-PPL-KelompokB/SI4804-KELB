@@ -47,7 +47,7 @@ class InboxController extends Controller
             }
         }
 
-        if (!empty($search)) {
+        if (! empty($search)) {
             $query->search($search);
         }
 
@@ -86,12 +86,12 @@ class InboxController extends Controller
         $userId = (int) Auth::id();
 
         $inbox = Inbox::create([
-            'pengirim_id'         => $userId,
-            'penerima_id'         => (int) $request->validated('penerima_id'),
-            'subjek'              => $request->validated('subjek'),
-            'isi'                 => $request->validated('isi'),
-            'is_read'             => false,
-            'read_at'             => null,
+            'pengirim_id' => $userId,
+            'penerima_id' => (int) $request->validated('penerima_id'),
+            'subjek' => $request->validated('subjek'),
+            'isi' => $request->validated('isi'),
+            'is_read' => false,
+            'read_at' => null,
             'deleted_by_pengirim' => false,
             'deleted_by_penerima' => false,
         ]);

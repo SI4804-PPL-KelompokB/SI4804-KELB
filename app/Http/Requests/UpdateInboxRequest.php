@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,7 @@ class UpdateInboxRequest extends FormRequest
     /**
      * Aturan validasi pembaruan status pesan (tandai read/unread).
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -36,7 +37,7 @@ class UpdateInboxRequest extends FormRequest
     {
         return [
             'is_read.required' => 'Status baca (is_read) wajib disertakan.',
-            'is_read.boolean'  => 'Status baca harus berupa nilai boolean (true/false atau 1/0).',
+            'is_read.boolean' => 'Status baca harus berupa nilai boolean (true/false atau 1/0).',
         ];
     }
 }

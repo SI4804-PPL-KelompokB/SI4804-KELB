@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DrugCategoryController;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\PermintaanController;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 | Web Routes - MedStock.id
 |--------------------------------------------------------------------------
 | Autentikasi pengguna (Login/Logout) dan antarmuka Web untuk PBI yang telah
-| diimplementasikan (PBI-01, PBI-07, PBI-14, PBI-21).
+| diimplementasikan (PBI-01, PBI-04, PBI-07, PBI-14, PBI-21).
 */
 
 // Redirect root ke dashboard jika login, atau ke formulir login jika belum
@@ -53,6 +54,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-04: CRUD Master Kategori Obat (Khusus Admin)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:admin')->prefix('admin')->group(function () {
+        Route::resource('categories', DrugCategoryController::class)->except('show');
+    });
 
     /*
     |--------------------------------------------------------------------------

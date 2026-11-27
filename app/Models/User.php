@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -65,7 +66,7 @@ class User extends Authenticatable
     /**
      * Relasi ke pesan masuk (inbox) yang diterima pengguna (PBI-21)
      */
-    public function inboxReceived(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function inboxReceived(): HasMany
     {
         return $this->hasMany(Inbox::class, 'penerima_id');
     }
@@ -73,7 +74,7 @@ class User extends Authenticatable
     /**
      * Relasi ke pesan keluar yang dikirim oleh pengguna (PBI-21)
      */
-    public function inboxSent(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function inboxSent(): HasMany
     {
         return $this->hasMany(Inbox::class, 'pengirim_id');
     }

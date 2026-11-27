@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\InboxController;
 use App\Http\Controllers\Api\PermintaanController;
 use App\Http\Controllers\Api\WilayahController;
 use Illuminate\Support\Facades\Route;
@@ -59,10 +60,10 @@ Route::middleware('auth')->group(function () {
 |   Helper: Daftar penerima      (GET  /api/inbox/recipients)
 */
 Route::middleware('auth')->group(function () {
-    Route::get('/inbox', [\App\Http\Controllers\Api\InboxController::class, 'index']);
-    Route::post('/inbox', [\App\Http\Controllers\Api\InboxController::class, 'store']);
-    Route::get('/inbox/recipients', [\App\Http\Controllers\Api\InboxController::class, 'recipients']);
-    Route::get('/inbox/{id}', [\App\Http\Controllers\Api\InboxController::class, 'show']);
-    Route::put('/inbox/{id}', [\App\Http\Controllers\Api\InboxController::class, 'update']);
-    Route::delete('/inbox/{id}', [\App\Http\Controllers\Api\InboxController::class, 'destroy']);
+    Route::get('/inbox', [InboxController::class, 'index']);
+    Route::post('/inbox', [InboxController::class, 'store']);
+    Route::get('/inbox/recipients', [InboxController::class, 'recipients']);
+    Route::get('/inbox/{id}', [InboxController::class, 'show']);
+    Route::put('/inbox/{id}', [InboxController::class, 'update']);
+    Route::delete('/inbox/{id}', [InboxController::class, 'destroy']);
 });

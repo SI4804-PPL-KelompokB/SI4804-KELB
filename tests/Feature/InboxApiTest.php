@@ -19,9 +19,13 @@ class InboxApiTest extends TestCase
     use RefreshDatabase;
 
     private User $userFaskes;
+
     private User $userDinkes;
+
     private User $userPenyedia;
+
     private User $userThirdParty;
+
     private Faskes $faskes;
 
     protected function setUp(): void
@@ -30,41 +34,41 @@ class InboxApiTest extends TestCase
 
         $this->faskes = Faskes::create([
             'nama_faskes' => 'Puskesmas Sukamaju',
-            'jenis'       => 'Puskesmas',
-            'alamat'      => 'Jl. Sukamaju No. 18',
-            'kota'        => 'Kota Bandung',
+            'jenis' => 'Puskesmas',
+            'alamat' => 'Jl. Sukamaju No. 18',
+            'kota' => 'Kota Bandung',
         ]);
 
         $this->userFaskes = User::create([
-            'name'      => 'Ayu Nuraini',
-            'email'     => 'ayu.nuraini@puskesmas.go.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'faskes',
+            'name' => 'Ayu Nuraini',
+            'email' => 'ayu.nuraini@puskesmas.go.id',
+            'password' => Hash::make('password123'),
+            'role' => 'faskes',
             'faskes_id' => $this->faskes->id,
             'is_active' => true,
         ]);
 
         $this->userDinkes = User::create([
-            'name'      => 'Dr. Hendra Gunawan',
-            'email'     => 'dinkes@bandung.go.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'dinkes',
+            'name' => 'Dr. Hendra Gunawan',
+            'email' => 'dinkes@bandung.go.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dinkes',
             'is_active' => true,
         ]);
 
         $this->userPenyedia = User::create([
-            'name'      => 'Budi Santoso',
-            'email'     => 'penyedia@farmasikota.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'penyedia',
+            'name' => 'Budi Santoso',
+            'email' => 'penyedia@farmasikota.id',
+            'password' => Hash::make('password123'),
+            'role' => 'penyedia',
             'is_active' => true,
         ]);
 
         $this->userThirdParty = User::create([
-            'name'      => 'Pengguna Lain',
-            'email'     => 'lain@puskesmas.go.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'faskes',
+            'name' => 'Pengguna Lain',
+            'email' => 'lain@puskesmas.go.id',
+            'password' => Hash::make('password123'),
+            'role' => 'faskes',
             'is_active' => true,
         ]);
     }
@@ -83,8 +87,8 @@ class InboxApiTest extends TestCase
     {
         $response = $this->postJson('/api/inbox', [
             'penerima_id' => $this->userDinkes->id,
-            'subjek'      => 'Tes Pesan',
-            'isi'         => 'Isi tes pesan',
+            'subjek' => 'Tes Pesan',
+            'isi' => 'Isi tes pesan',
         ]);
         $response->assertStatus(401);
     }
@@ -98,16 +102,16 @@ class InboxApiTest extends TestCase
         Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Pesan untuk Ayu',
-            'isi'         => 'Isi pesan untuk Ayu',
+            'subjek' => 'Pesan untuk Ayu',
+            'isi' => 'Isi pesan untuk Ayu',
         ]);
 
         // Pesan untuk userThirdParty
         Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userThirdParty->id,
-            'subjek'      => 'Pesan rahasia untuk pihak lain',
-            'isi'         => 'Tidak boleh terlihat oleh Ayu',
+            'subjek' => 'Pesan rahasia untuk pihak lain',
+            'isi' => 'Tidak boleh terlihat oleh Ayu',
         ]);
 
         $response = $this->actingAs($this->userFaskes)->getJson('/api/inbox');
@@ -115,9 +119,9 @@ class InboxApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'status' => 'success',
-                'data'   => [
+                'data' => [
                     'folder' => 'inbox',
-                    'total'  => 1,
+                    'total' => 1,
                 ],
             ])
             ->assertJsonFragment(['subjek' => 'Pesan untuk Ayu'])
@@ -130,18 +134,18 @@ class InboxApiTest extends TestCase
         Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Pesan Belum Dibaca',
-            'isi'         => 'Isi unread',
-            'is_read'     => false,
+            'subjek' => 'Pesan Belum Dibaca',
+            'isi' => 'Isi unread',
+            'is_read' => false,
         ]);
 
         Inbox::create([
             'pengirim_id' => $this->userPenyedia->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Pesan Sudah Dibaca',
-            'isi'         => 'Isi read',
-            'is_read'     => true,
-            'read_at'     => now(),
+            'subjek' => 'Pesan Sudah Dibaca',
+            'isi' => 'Isi read',
+            'is_read' => true,
+            'read_at' => now(),
         ]);
 
         $responseUnread = $this->actingAs($this->userFaskes)->getJson('/api/inbox?status=unread');
@@ -161,8 +165,8 @@ class InboxApiTest extends TestCase
         Inbox::create([
             'pengirim_id' => $this->userFaskes->id,
             'penerima_id' => $this->userDinkes->id,
-            'subjek'      => 'Laporan Faskes Keluar',
-            'isi'         => 'Terkirim dari faskes',
+            'subjek' => 'Laporan Faskes Keluar',
+            'isi' => 'Terkirim dari faskes',
         ]);
 
         $response = $this->actingAs($this->userFaskes)->getJson('/api/inbox?folder=sent');
@@ -170,9 +174,9 @@ class InboxApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'status' => 'success',
-                'data'   => [
+                'data' => [
                     'folder' => 'sent',
-                    'total'  => 1,
+                    'total' => 1,
                 ],
             ])
             ->assertJsonFragment(['subjek' => 'Laporan Faskes Keluar']);
@@ -184,15 +188,15 @@ class InboxApiTest extends TestCase
         Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Alokasi Serum Anti Bisa Ular',
-            'isi'         => 'Detail serum ABU',
+            'subjek' => 'Alokasi Serum Anti Bisa Ular',
+            'isi' => 'Detail serum ABU',
         ]);
 
         Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Jadwal Rapat Sosialisasi',
-            'isi'         => 'Undangan rapat',
+            'subjek' => 'Jadwal Rapat Sosialisasi',
+            'isi' => 'Undangan rapat',
         ]);
 
         $response = $this->actingAs($this->userFaskes)->getJson('/api/inbox?search=Bisa+Ular');
@@ -223,29 +227,29 @@ class InboxApiTest extends TestCase
     {
         $payload = [
             'penerima_id' => $this->userDinkes->id,
-            'subjek'      => 'Permohonan Tambahan Infus RL',
-            'isi'         => 'Stok cairan infus Ringer Lactate tersisa 10 botol. Mohon bantuan pasokan.',
+            'subjek' => 'Permohonan Tambahan Infus RL',
+            'isi' => 'Stok cairan infus Ringer Lactate tersisa 10 botol. Mohon bantuan pasokan.',
         ];
 
         $response = $this->actingAs($this->userFaskes)->postJson('/api/inbox', $payload);
 
         $response->assertStatus(201)
             ->assertJson([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Pesan berhasil dikirim.',
-                'data'    => [
+                'data' => [
                     'pengirim_id' => $this->userFaskes->id,
                     'penerima_id' => $this->userDinkes->id,
-                    'subjek'      => 'Permohonan Tambahan Infus RL',
-                    'is_read'     => false,
+                    'subjek' => 'Permohonan Tambahan Infus RL',
+                    'is_read' => false,
                 ],
             ]);
 
         $this->assertDatabaseHas('inbox', [
             'pengirim_id' => $this->userFaskes->id,
             'penerima_id' => $this->userDinkes->id,
-            'subjek'      => 'Permohonan Tambahan Infus RL',
-            'is_read'     => 0,
+            'subjek' => 'Permohonan Tambahan Infus RL',
+            'is_read' => 0,
         ]);
     }
 
@@ -254,8 +258,8 @@ class InboxApiTest extends TestCase
     {
         $payload = [
             'penerima_id' => $this->userFaskes->id, // Mengirim ke diri sendiri
-            'subjek'      => 'Tes Diri Sendiri',
-            'isi'         => 'Isi tes',
+            'subjek' => 'Tes Diri Sendiri',
+            'isi' => 'Isi tes',
         ];
 
         $response = $this->actingAs($this->userFaskes)->postJson('/api/inbox', $payload);
@@ -269,8 +273,8 @@ class InboxApiTest extends TestCase
     {
         $payload = [
             'penerima_id' => 99999, // ID tidak ada
-            'subjek'      => 'Tes Tujuan Salah',
-            'isi'         => 'Isi tes',
+            'subjek' => 'Tes Tujuan Salah',
+            'isi' => 'Isi tes',
         ];
 
         $response = $this->actingAs($this->userFaskes)->postJson('/api/inbox', $payload);
@@ -298,9 +302,9 @@ class InboxApiTest extends TestCase
         $msg = Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Konfirmasi Alokasi',
-            'isi'         => 'Detail surat alokasi obat',
-            'is_read'     => false,
+            'subjek' => 'Konfirmasi Alokasi',
+            'isi' => 'Detail surat alokasi obat',
+            'is_read' => false,
         ]);
 
         $response = $this->actingAs($this->userFaskes)->getJson("/api/inbox/{$msg->id}");
@@ -308,15 +312,15 @@ class InboxApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'status' => 'success',
-                'data'   => [
-                    'id'      => $msg->id,
-                    'subjek'  => 'Konfirmasi Alokasi',
+                'data' => [
+                    'id' => $msg->id,
+                    'subjek' => 'Konfirmasi Alokasi',
                     'is_read' => true,
                 ],
             ]);
 
         $this->assertDatabaseHas('inbox', [
-            'id'      => $msg->id,
+            'id' => $msg->id,
             'is_read' => 1,
         ]);
     }
@@ -327,8 +331,8 @@ class InboxApiTest extends TestCase
         $msg = Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Pesan Rahasia',
-            'isi'         => 'Hanya untuk Ayu',
+            'subjek' => 'Pesan Rahasia',
+            'isi' => 'Hanya untuk Ayu',
         ]);
 
         $response = $this->actingAs($this->userThirdParty)->getJson("/api/inbox/{$msg->id}");
@@ -343,9 +347,9 @@ class InboxApiTest extends TestCase
         $msg = Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Status Baca Tes',
-            'isi'         => 'Isi pesan',
-            'is_read'     => false,
+            'subjek' => 'Status Baca Tes',
+            'isi' => 'Isi pesan',
+            'is_read' => false,
         ]);
 
         // Tandai sudah dibaca
@@ -373,9 +377,9 @@ class InboxApiTest extends TestCase
         $msg = Inbox::create([
             'pengirim_id' => $this->userFaskes->id,
             'penerima_id' => $this->userDinkes->id,
-            'subjek'      => 'Pesan Terkirim',
-            'isi'         => 'Isi pesan',
-            'is_read'     => false,
+            'subjek' => 'Pesan Terkirim',
+            'isi' => 'Isi pesan',
+            'is_read' => false,
         ]);
 
         // Pengirim mencoba menandai read/unread untuk penerima
@@ -394,15 +398,15 @@ class InboxApiTest extends TestCase
         $msg = Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Pesan Akan Dihapus',
-            'isi'         => 'Isi pesan',
+            'subjek' => 'Pesan Akan Dihapus',
+            'isi' => 'Isi pesan',
         ]);
 
         $response = $this->actingAs($this->userFaskes)->deleteJson("/api/inbox/{$msg->id}");
 
         $response->assertStatus(200)
             ->assertJson([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Pesan berhasil dihapus dari kotak pesan Anda.',
             ]);
 
@@ -412,7 +416,7 @@ class InboxApiTest extends TestCase
 
         // Tetapi masih ada di database (hanya ditandai deleted_by_penerima)
         $this->assertDatabaseHas('inbox', [
-            'id'                  => $msg->id,
+            'id' => $msg->id,
             'deleted_by_penerima' => 1,
             'deleted_by_pengirim' => 0,
         ]);
@@ -424,8 +428,8 @@ class InboxApiTest extends TestCase
         $msg = Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Pesan Penting',
-            'isi'         => 'Isi pesan',
+            'subjek' => 'Pesan Penting',
+            'isi' => 'Isi pesan',
         ]);
 
         $response = $this->actingAs($this->userThirdParty)->deleteJson("/api/inbox/{$msg->id}");
@@ -447,8 +451,8 @@ class InboxApiTest extends TestCase
         Inbox::create([
             'pengirim_id' => $this->userDinkes->id,
             'penerima_id' => $this->userFaskes->id,
-            'subjek'      => 'Pesan Web Rendering',
-            'isi'         => 'Tes tampilan halaman web',
+            'subjek' => 'Pesan Web Rendering',
+            'isi' => 'Tes tampilan halaman web',
         ]);
 
         $response = $this->actingAs($this->userFaskes)->get('/inbox');
@@ -464,8 +468,8 @@ class InboxApiTest extends TestCase
     {
         $payload = [
             'penerima_id' => $this->userDinkes->id,
-            'subjek'      => 'Kirim via Web Form',
-            'isi'         => 'Isi pesan dari web form blade',
+            'subjek' => 'Kirim via Web Form',
+            'isi' => 'Isi pesan dari web form blade',
         ];
 
         $response = $this->actingAs($this->userFaskes)->post('/inbox', $payload);
@@ -476,7 +480,7 @@ class InboxApiTest extends TestCase
         $this->assertDatabaseHas('inbox', [
             'pengirim_id' => $this->userFaskes->id,
             'penerima_id' => $this->userDinkes->id,
-            'subjek'      => 'Kirim via Web Form',
+            'subjek' => 'Kirim via Web Form',
         ]);
     }
 }

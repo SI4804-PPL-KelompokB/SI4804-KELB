@@ -51,7 +51,7 @@ class InboxController extends Controller
             }
         }
 
-        if (!empty($search)) {
+        if (! empty($search)) {
             $query->search($search);
         }
 
@@ -60,13 +60,13 @@ class InboxController extends Controller
         $unreadCount = Inbox::inboxFor($userId)->unread()->count();
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Daftar pesan berhasil diambil.',
-            'data'    => [
-                'folder'       => $folder,
+            'data' => [
+                'folder' => $folder,
                 'unread_count' => $unreadCount,
-                'total'        => $messages->count(),
-                'messages'     => $messages,
+                'total' => $messages->count(),
+                'messages' => $messages,
             ],
         ]);
     }
@@ -81,12 +81,12 @@ class InboxController extends Controller
         $userId = (int) Auth::id();
 
         $inbox = Inbox::create([
-            'pengirim_id'         => $userId,
-            'penerima_id'         => (int) $request->validated('penerima_id'),
-            'subjek'              => $request->validated('subjek'),
-            'isi'                 => $request->validated('isi'),
-            'is_read'             => false,
-            'read_at'             => null,
+            'pengirim_id' => $userId,
+            'penerima_id' => (int) $request->validated('penerima_id'),
+            'subjek' => $request->validated('subjek'),
+            'isi' => $request->validated('isi'),
+            'is_read' => false,
+            'read_at' => null,
             'deleted_by_pengirim' => false,
             'deleted_by_penerima' => false,
         ]);
@@ -99,9 +99,9 @@ class InboxController extends Controller
         ]);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Pesan berhasil dikirim.',
-            'data'    => $inbox,
+            'data' => $inbox,
         ], 201);
     }
 
@@ -122,9 +122,9 @@ class InboxController extends Controller
             ->get(['id', 'name', 'email', 'role', 'jabatan', 'faskes_id']);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Daftar penerima berhasil diambil.',
-            'data'    => $recipients,
+            'data' => $recipients,
         ]);
     }
 
@@ -144,9 +144,9 @@ class InboxController extends Controller
             'penerima.faskes:id,nama_faskes',
         ])->find($id);
 
-        if (!$inbox) {
+        if (! $inbox) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Pesan dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
@@ -154,7 +154,7 @@ class InboxController extends Controller
         // Cek otorisasi akses
         if ($inbox->pengirim_id !== $userId && $inbox->penerima_id !== $userId) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Anda tidak memiliki hak akses untuk membaca pesan ini.',
             ], 403);
         }
@@ -162,28 +162,28 @@ class InboxController extends Controller
         // Cek jika pesan telah dihapus oleh pengguna yang sedang meminta
         if ($inbox->penerima_id === $userId && $inbox->deleted_by_penerima) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Pesan dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
 
         if ($inbox->pengirim_id === $userId && $inbox->deleted_by_pengirim) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Pesan dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
 
         // Otomatis tandai sebagai sudah dibaca jika penerima membuka pesan
         $autoMark = $request->boolean('auto_read', true);
-        if ($inbox->penerima_id === $userId && !$inbox->is_read && $autoMark) {
+        if ($inbox->penerima_id === $userId && ! $inbox->is_read && $autoMark) {
             $inbox->markAsRead();
         }
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Detail pesan berhasil diambil.',
-            'data'    => $inbox->fresh([
+            'data' => $inbox->fresh([
                 'pengirim:id,name,role,faskes_id',
                 'pengirim.faskes:id,nama_faskes',
                 'penerima:id,name,role,faskes_id',
@@ -202,9 +202,9 @@ class InboxController extends Controller
         $userId = (int) Auth::id();
         $inbox = Inbox::find($id);
 
-        if (!$inbox) {
+        if (! $inbox) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Pesan dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
@@ -212,14 +212,14 @@ class InboxController extends Controller
         // Hanya penerima pesan yang dapat mengubah status read/unread
         if ($inbox->penerima_id !== $userId) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Hanya penerima pesan yang dapat menandai status baca pesan ini.',
             ], 403);
         }
 
         if ($inbox->deleted_by_penerima) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Pesan dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
@@ -234,9 +234,9 @@ class InboxController extends Controller
         }
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => $msg,
-            'data'    => $inbox->fresh([
+            'data' => $inbox->fresh([
                 'pengirim:id,name,role,faskes_id',
                 'pengirim.faskes:id,nama_faskes',
                 'penerima:id,name,role,faskes_id',
@@ -255,16 +255,16 @@ class InboxController extends Controller
         $userId = (int) Auth::id();
         $inbox = Inbox::find($id);
 
-        if (!$inbox) {
+        if (! $inbox) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Pesan dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
 
         if ($inbox->pengirim_id !== $userId && $inbox->penerima_id !== $userId) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Anda tidak memiliki hak akses untuk menghapus pesan ini.',
             ], 403);
         }
@@ -273,7 +273,7 @@ class InboxController extends Controller
         if (($inbox->penerima_id === $userId && $inbox->deleted_by_penerima) ||
             ($inbox->pengirim_id === $userId && $inbox->deleted_by_pengirim)) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Pesan dengan ID {$id} sudah dihapus sebelumnya.",
             ], 404);
         }
@@ -281,9 +281,9 @@ class InboxController extends Controller
         $inbox->deleteForUser($userId);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Pesan berhasil dihapus dari kotak pesan Anda.',
-            'data'    => null,
+            'data' => null,
         ]);
     }
 }
