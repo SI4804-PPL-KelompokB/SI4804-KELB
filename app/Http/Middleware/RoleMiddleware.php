@@ -15,17 +15,18 @@ class RoleMiddleware
      * Untuk permintaan API (expectsJson), mengembalikan JSON 401/403.
      * Untuk permintaan web biasa, mengembalikan redirect sesuai peran.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             if ($request->expectsJson()) {
                 return response()->json([
-                    'status'  => 'error',
+                    'status' => 'error',
                     'message' => 'Unauthenticated. Silakan masuk terlebih dahulu.',
                 ], 401);
             }
+
             return redirect()->route('login')->with('error', 'Silakan masuk terlebih dahulu untuk mengakses sistem.');
         }
 
@@ -43,7 +44,7 @@ class RoleMiddleware
         // Akses ditolak
         if ($request->expectsJson()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Akses ditolak: Anda tidak memiliki wewenang untuk melakukan operasi ini.',
             ], 403);
         }
@@ -51,10 +52,10 @@ class RoleMiddleware
         // Untuk web: arahkan ke dashboard peran pengguna masing-masing
         $userRole = strtolower($user->role ?? '');
         $targetRoute = match ($userRole) {
-            'admin'    => 'admin.dashboard',
-            'dinkes'   => 'dinkes.dashboard',
+            'admin' => 'admin.dashboard',
+            'dinkes' => 'dinkes.dashboard',
             'penyedia' => 'penyedia.dashboard',
-            default    => 'faskes.dashboard',
+            default => 'faskes.dashboard',
         };
 
         return redirect()->route($targetRoute)->with('error', 'Akses ditolak: Anda tidak memiliki wewenang untuk membuka halaman tersebut.');

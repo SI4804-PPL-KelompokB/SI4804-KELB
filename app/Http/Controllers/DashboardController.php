@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -30,6 +29,7 @@ class DashboardController extends Controller
     public function faskes(): View
     {
         $user = Auth::user()->load('faskes');
+
         return view('dashboard.faskes', compact('user'));
     }
 
@@ -39,6 +39,7 @@ class DashboardController extends Controller
     public function dinkes(): View
     {
         $user = Auth::user();
+
         return view('dashboard.dinkes', compact('user'));
     }
 
@@ -48,6 +49,7 @@ class DashboardController extends Controller
     public function penyedia(): View
     {
         $user = Auth::user()->load('faskes');
+
         return view('dashboard.penyedia', compact('user'));
     }
 
@@ -57,6 +59,7 @@ class DashboardController extends Controller
     public function admin(): View
     {
         $user = Auth::user();
+
         return view('dashboard.admin', compact('user'));
     }
 }

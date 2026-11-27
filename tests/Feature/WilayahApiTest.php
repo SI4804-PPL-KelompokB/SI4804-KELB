@@ -20,9 +20,13 @@ class WilayahApiTest extends TestCase
 
     // ── Test Users ───────────────────────────────────────────────
     private User $admin;
+
     private User $dinkes;
+
     private User $faskes;
+
     private User $penyedia;
+
     private Faskes $faksesEntity;
 
     protected function setUp(): void
@@ -32,41 +36,41 @@ class WilayahApiTest extends TestCase
         // Buat faskes entity untuk user faskes & penyedia
         $this->faksesEntity = Faskes::create([
             'nama_faskes' => 'Puskesmas Sukamaju',
-            'jenis'       => 'Puskesmas',
-            'alamat'      => 'Jl. Sukamaju No. 18',
-            'kota'        => 'Kota Bandung',
+            'jenis' => 'Puskesmas',
+            'alamat' => 'Jl. Sukamaju No. 18',
+            'kota' => 'Kota Bandung',
         ]);
 
         $this->admin = User::create([
-            'name'      => 'Admin MedStock',
-            'email'     => 'admin@medstock.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'admin',
+            'name' => 'Admin MedStock',
+            'email' => 'admin@medstock.id',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
             'is_active' => true,
         ]);
 
         $this->dinkes = User::create([
-            'name'      => 'Dr. Hendra Gunawan',
-            'email'     => 'dinkes@bandung.go.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'dinkes',
+            'name' => 'Dr. Hendra Gunawan',
+            'email' => 'dinkes@bandung.go.id',
+            'password' => Hash::make('password123'),
+            'role' => 'dinkes',
             'is_active' => true,
         ]);
 
         $this->faskes = User::create([
-            'name'      => 'Ayu Nuraini',
-            'email'     => 'ayu.nuraini@puskesmas.go.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'faskes',
+            'name' => 'Ayu Nuraini',
+            'email' => 'ayu.nuraini@puskesmas.go.id',
+            'password' => Hash::make('password123'),
+            'role' => 'faskes',
             'faskes_id' => $this->faksesEntity->id,
             'is_active' => true,
         ]);
 
         $this->penyedia = User::create([
-            'name'      => 'Budi Santoso',
-            'email'     => 'penyedia@farmasikota.id',
-            'password'  => Hash::make('password123'),
-            'role'      => 'penyedia',
+            'name' => 'Budi Santoso',
+            'email' => 'penyedia@farmasikota.id',
+            'password' => Hash::make('password123'),
+            'role' => 'penyedia',
             'faskes_id' => $this->faksesEntity->id,
             'is_active' => true,
         ]);
@@ -83,24 +87,25 @@ class WilayahApiTest extends TestCase
 
         $response->assertStatus(401);
     }
+
     #[Test]
-public function web_login_session_can_authenticate_api_requests(): void
-{
-    // Login melalui endpoint web, bukan actingAs().
-    $loginResponse = $this->post('/login', [
-        'email' => 'admin@medstock.id',
-        'password' => 'password123',
-        'role' => 'admin',
-    ]);
+    public function web_login_session_can_authenticate_api_requests(): void
+    {
+        // Login melalui endpoint web, bukan actingAs().
+        $loginResponse = $this->post('/login', [
+            'email' => 'admin@medstock.id',
+            'password' => 'password123',
+            'role' => 'admin',
+        ]);
 
-    $loginResponse->assertRedirect();
+        $loginResponse->assertRedirect();
 
-    // Gunakan session hasil login untuk mengakses API.
-    $apiResponse = $this->getJson('/api/wilayah');
+        // Gunakan session hasil login untuk mengakses API.
+        $apiResponse = $this->getJson('/api/wilayah');
 
-    $apiResponse->assertStatus(200)
-        ->assertJsonPath('status', 'success');
-}
+        $apiResponse->assertStatus(200)
+            ->assertJsonPath('status', 'success');
+    }
 
     #[Test]
     public function authenticated_admin_can_get_wilayah_list(): void
@@ -167,7 +172,7 @@ public function web_login_session_can_authenticate_api_requests(): void
     {
         $payload = [
             'nama_wilayah' => 'Wilayah Bandung Utara',
-            'deskripsi'    => 'Zona faskes bagian utara kota.',
+            'deskripsi' => 'Zona faskes bagian utara kota.',
         ];
 
         $response = $this->actingAs($this->admin)->postJson('/api/wilayah', $payload);
@@ -203,7 +208,7 @@ public function web_login_session_can_authenticate_api_requests(): void
         $response->assertStatus(201);
         $this->assertDatabaseHas('wilayah', [
             'nama_wilayah' => 'Wilayah Tanpa Deskripsi',
-            'deskripsi'    => null,
+            'deskripsi' => null,
         ]);
     }
 
@@ -271,7 +276,7 @@ public function web_login_session_can_authenticate_api_requests(): void
     {
         $wilayah = Wilayah::create([
             'nama_wilayah' => 'Wilayah Bandung Timur',
-            'deskripsi'    => 'Zona timur kota.',
+            'deskripsi' => 'Zona timur kota.',
         ]);
 
         $response = $this->actingAs($this->faskes)->getJson("/api/wilayah/{$wilayah->id}");
@@ -311,7 +316,7 @@ public function web_login_session_can_authenticate_api_requests(): void
 
         $response = $this->actingAs($this->admin)->putJson("/api/wilayah/{$wilayah->id}", [
             'nama_wilayah' => 'Wilayah Diperbarui',
-            'deskripsi'    => 'Deskripsi baru.',
+            'deskripsi' => 'Deskripsi baru.',
         ]);
 
         $response->assertStatus(200)
@@ -343,7 +348,7 @@ public function web_login_session_can_authenticate_api_requests(): void
 
         $response = $this->actingAs($this->admin)->putJson("/api/wilayah/{$wilayah->id}", [
             'nama_wilayah' => 'Wilayah Sama',
-            'deskripsi'    => 'Deskripsi baru untuk nama yang sama.',
+            'deskripsi' => 'Deskripsi baru untuk nama yang sama.',
         ]);
 
         $response->assertStatus(200)->assertJsonPath('status', 'success');

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -99,7 +98,8 @@ class User extends Authenticatable
         $currentRole = strtolower($this->role ?? '');
 
         if (is_array($roles)) {
-            $normalized = array_map(fn($r) => strtolower($r), $roles);
+            $normalized = array_map(fn ($r) => strtolower($r), $roles);
+
             return in_array($currentRole, $normalized, true);
         }
 

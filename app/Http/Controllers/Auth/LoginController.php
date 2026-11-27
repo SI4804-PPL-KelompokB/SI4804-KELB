@@ -44,14 +44,14 @@ class LoginController extends Controller
         $user = User::where('email', $validated['email'])->first();
 
         // 1. Validasi keberadaan akun dan kecocokan password
-        if (!$user || !Auth::validate(['email' => $validated['email'], 'password' => $validated['password']])) {
+        if (! $user || ! Auth::validate(['email' => $validated['email'], 'password' => $validated['password']])) {
             throw ValidationException::withMessages([
                 'email' => 'Kombinasi email dan kata sandi yang Anda masukkan tidak sesuai.',
             ]);
         }
 
         // 2. Validasi status keaktifan akun
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             throw ValidationException::withMessages([
                 'email' => 'Akun Anda sedang dinonaktifkan. Hubungi Administrator Dinkes.',
             ]);
@@ -60,7 +60,7 @@ class LoginController extends Controller
         // 3. Validasi kesesuaian peran yang dipilih (Sesuai F1 dan Mockup 4.5 wewenang peran)
         if (strtolower($user->role) !== strtolower($validated['role'])) {
             throw ValidationException::withMessages([
-                'role' => 'Peran yang Anda pilih tidak cocok dengan hak akses akun. Akun ini terdaftar sebagai ' . $user->role_label . '.',
+                'role' => 'Peran yang Anda pilih tidak cocok dengan hak akses akun. Akun ini terdaftar sebagai '.$user->role_label.'.',
             ]);
         }
 

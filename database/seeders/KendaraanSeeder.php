@@ -15,7 +15,7 @@ class KendaraanSeeder extends Seeder
     {
         $gudangFarmasi = Faskes::where('nama_faskes', 'Gudang Farmasi Dinkes Kota Bandung')->first();
 
-        if (!$gudangFarmasi) {
+        if (! $gudangFarmasi) {
             return;
         }
 

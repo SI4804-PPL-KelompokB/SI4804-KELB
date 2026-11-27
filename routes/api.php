@@ -1,37 +1,48 @@
 <?php
 
+use App\Http\Controllers\Api\PermintaanController;
 use App\Http\Controllers\Api\WilayahController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes - MedStock.id
+| API Routes — MedStock.id
 |--------------------------------------------------------------------------
-| Autentikasi menggunakan session Laravel (session-based auth).
-| Permintaan tanpa autentikasi mengembalikan JSON 401 (bukan redirect),
-| karena route berada dalam prefix 'api' yang dideteksi sebagai API request.
-|
-| Proteksi CSRF: Request yang mengubah data dari browser harus menyertakan
-| CSRF token melalui header X-XSRF-TOKEN. Axios dapat mengirim header ini
-| otomatis jika cookie XSRF-TOKEN tersedia, sedangkan Fetch perlu mengaturnya
-| secara eksplisit.
+| Seluruh endpoint di bawah menggunakan session-based authentication (guard web)
+| yang telah diaktifkan pada group 'api' di bootstrap/app.php.
+| Request yang mengubah state (POST, PUT, DELETE) dari browser wajib menyertakan
+| header X-XSRF-TOKEN (CSRF token dari cookie XSRF-TOKEN).
 */
 
-/*
-|--------------------------------------------------------------------------
-| PBI-01: Manajemen Data Wilayah
-|--------------------------------------------------------------------------
-*/
 Route::middleware('auth')->group(function () {
-    // READ: Semua role yang terautentikasi dapat melihat wilayah
+    // =========================================================================
+    // PBI-01: Manajemen Data Wilayah / Zona Faskes
+    // =========================================================================
+    // Read: semua role yang terautentikasi (admin, dinkes, faskes, penyedia)
     Route::get('/wilayah', [WilayahController::class, 'index']);
     Route::get('/wilayah/{id}', [WilayahController::class, 'show']);
 
-    // WRITE: Hanya admin dan dinkes yang dapat mengelola wilayah
+    // Write: hanya admin dan dinkes
     Route::middleware('role:admin,dinkes')->group(function () {
         Route::post('/wilayah', [WilayahController::class, 'store']);
         Route::put('/wilayah/{id}', [WilayahController::class, 'update']);
         Route::delete('/wilayah/{id}', [WilayahController::class, 'destroy']);
+    });
+
+    // =========================================================================
+    // PBI-07: Pencatatan Permintaan Darurat Faskes
+    // =========================================================================
+    // Read: faskes (milik sendiri), dinkes & admin (lintas fasilitas); penyedia ditolak (403)
+    Route::middleware('role:faskes,dinkes,admin')->group(function () {
+        Route::get('/permintaan', [PermintaanController::class, 'index']);
+        Route::get('/permintaan/{id}', [PermintaanController::class, 'show']);
+    });
+
+    // Write: hanya role faskes (membuat, mengubah urgensi, dan menghapus permintaan milik sendiri)
+    Route::middleware('role:faskes')->group(function () {
+        Route::post('/permintaan', [PermintaanController::class, 'store']);
+        Route::put('/permintaan/{id}', [PermintaanController::class, 'update']);
+        Route::delete('/permintaan/{id}', [PermintaanController::class, 'destroy']);
     });
 });
 
