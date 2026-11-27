@@ -106,6 +106,12 @@
             'active' => request()->routeIs('permintaan.*'),
             'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />',
         ];
+        $navItems[] = [
+            'label' => 'Penawaran Surplus',
+            'route' => 'penawaran.index',
+            'active' => request()->routeIs('penawaran.*'),
+            'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />',
+        ];
     }
 
     if ($userRole === 'penyedia') {
@@ -352,4 +358,5 @@
     @stack('scripts')
 </body>
 </html>
+
 
