@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+﻿@extends('layouts.dashboard')
 
 @section('title', 'Permintaan Darurat - MedStock.id')
 
@@ -20,15 +20,15 @@
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                     </svg>
-                    <span>PBI-07</span>
+                    <span>PBI-07 &amp; PBI-08</span>
                     <span class="text-slate-300">&bull;</span>
-                    <span class="text-slate-500 normal-case font-medium">Pencatatan Permintaan Darurat Faskes</span>
+                    <span class="text-slate-500 normal-case font-medium">Permintaan Darurat &amp; Detail Item Obat</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                     Permintaan Darurat
                 </h1>
                 <p class="text-sm text-slate-500 mt-1 max-w-2xl">
-                    Catat pengajuan kebutuhan obat darurat untuk fasilitas kesehatan Anda, pantau status pengajuan, dan sesuaikan tingkat urgensi selama permintaan masih berstatus <span class="font-semibold text-slate-700">diajukan</span>.
+                    Catat pengajuan kebutuhan obat darurat, kelola daftar item obat beserta jumlahnya, dan sesuaikan tingkat urgensi selama permintaan berstatus <span class="font-semibold text-slate-700">diajukan</span>.
                 </p>
             </div>
 
@@ -218,9 +218,7 @@
                         <th class="text-left px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">Status</th>
                         <th class="text-left px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">Catatan</th>
                         <th class="text-left px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">Waktu Dibuat</th>
-                        @if ($canManage)
-                            <th class="text-center px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">Aksi</th>
-                        @endif
+                        <th class="text-center px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="permintaan-table-body" class="divide-y divide-slate-100"></tbody>
@@ -230,7 +228,132 @@
 </div>
 
 {{-- ======================================================================= --}}
-{{-- MODALS (Hanya dirender untuk peran Faskes yang berwenang)               --}}
+{{-- MODAL: DETAIL ITEM OBAT (PBI-08 - Dapat dilihat semua role di halaman)  --}}
+{{-- ======================================================================= --}}
+<div
+    id="modal-items-permintaan"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-items-title"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden"
+>
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-xs" onclick="closeItemsModal()"></div>
+
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl border border-slate-200 max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100 shrink-0">
+            <div>
+                <div class="flex items-center gap-2">
+                    <h2 id="modal-items-title" class="text-base font-bold text-slate-900">Detail Item Obat Permintaan</h2>
+                    <span id="items-modal-status-badge"></span>
+                </div>
+                <p id="items-modal-subtitle" class="text-xs text-slate-500 mt-0.5">Daftar obat yang diminta pada pengajuan darurat.</p>
+            </div>
+            <button
+                type="button"
+                onclick="closeItemsModal()"
+                class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition cursor-pointer"
+                aria-label="Tutup modal"
+            >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto space-y-5 flex-1">
+            <div id="items-modal-alert" class="hidden p-3 rounded-xl border text-xs"></div>
+
+            {{-- Form Tambah Item Obat (Hanya Faskes & Status Diajukan) --}}
+            @if ($canManage)
+                <form id="form-add-item" onsubmit="submitAddPermintaanItem(event)" class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3 hidden">
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Tambah Item Obat Baru</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                        <div class="sm:col-span-6">
+                            <label for="item-nama_obat" class="block text-[11px] font-semibold text-slate-700 mb-1">Nama Obat <span class="text-red-500">*</span></label>
+                            <input
+                                type="text"
+                                id="item-nama_obat"
+                                required
+                                maxlength="150"
+                                placeholder="Contoh: Epinephrine 1mg/mL"
+                                class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            >
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label for="item-satuan" class="block text-[11px] font-semibold text-slate-700 mb-1">Satuan</label>
+                            <input
+                                type="text"
+                                id="item-satuan"
+                                maxlength="50"
+                                value="Box"
+                                placeholder="Box / Ampul"
+                                class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            >
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label for="item-qty" class="block text-[11px] font-semibold text-slate-700 mb-1">Qty <span class="text-red-500">*</span></label>
+                            <input
+                                type="number"
+                                id="item-qty"
+                                required
+                                min="1"
+                                max="1000000"
+                                value="1"
+                                class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            >
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button
+                            type="submit"
+                            id="btn-submit-add-item"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold shadow-xs transition cursor-pointer"
+                        >
+                            <span>+ Tambah Item</span>
+                        </button>
+                    </div>
+                </form>
+            @endif
+
+            {{-- Daftar Item Obat --}}
+            <div id="items-loading" class="py-8 text-center text-xs text-slate-500">Memuat daftar item obat...</div>
+
+            <div id="items-empty" class="hidden py-10 text-center rounded-xl border border-dashed border-slate-200">
+                <p class="text-sm font-semibold text-slate-700">Belum ada item obat tercatat</p>
+                <p class="text-xs text-slate-400 mt-1">Tambahkan jenis dan jumlah obat yang dibutuhkan pada permintaan ini.</p>
+            </div>
+
+            <div id="items-table-wrapper" class="hidden overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200">
+                            <th class="text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">Nama Obat</th>
+                            <th class="text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 w-24">Satuan</th>
+                            <th class="text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 w-32">Jumlah (Qty)</th>
+                            @if ($canManage)
+                                <th class="text-center px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 w-36">Aksi</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody id="items-table-body" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 border-t border-slate-100 flex justify-end shrink-0">
+            <button
+                type="button"
+                onclick="closeItemsModal()"
+                class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:bg-slate-50 transition cursor-pointer"
+            >
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- ======================================================================= --}}
+{{-- MODALS PBI-07 (Hanya dirender untuk peran Faskes yang berwenang)        --}}
 {{-- ======================================================================= --}}
 @if ($canManage)
     {{-- MODAL: BUAT PERMINTAAN DARURAT --}}
@@ -450,6 +573,8 @@
     const HAS_URGENSI = @json($hasUrgensi);
 
     let permintaanCache = [];
+    let activeItemsPermintaanId = null;
+    let activeItemsEditable = false;
 
     function getCsrfToken() {
         const meta = document.querySelector('meta[name="csrf-token"]');
@@ -506,6 +631,21 @@
             <button type="button" onclick="this.parentElement.classList.add('hidden')" class="ml-4 font-bold text-base leading-none opacity-75 hover:opacity-100 cursor-pointer">&times;</button>
         `;
         container.classList.remove('hidden');
+    }
+
+    function showItemsModalAlert(type, message) {
+        const el = document.getElementById('items-modal-alert');
+        el.className = type === 'success'
+            ? 'p-3 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-800 text-xs'
+            : 'p-3 rounded-xl border bg-red-50 border-red-200 text-red-700 text-xs';
+        el.textContent = message;
+        el.classList.remove('hidden');
+    }
+
+    function hideItemsModalAlert() {
+        const el = document.getElementById('items-modal-alert');
+        el.classList.add('hidden');
+        el.textContent = '';
     }
 
     async function apiFetch(url, options = {}) {
@@ -581,6 +721,7 @@
 
         tbody.innerHTML = items.map(item => {
             const isEditable = String(item.status || '').toLowerCase() === 'diajukan';
+            const itemsCount = Number(item.items_count || 0);
             const urgensiName = item.urgensi ? item.urgensi.nama_level : `Urgensi #${item.urgensi_id}`;
             const batasJam = item.urgensi && item.urgensi.batas_waktu_jam !== undefined
                 ? `<span class="block text-[11px] text-slate-400">Batas waktu: ${escapeHtml(item.urgensi.batas_waktu_jam)} jam</span>`
@@ -593,7 +734,18 @@
                    </td>`
                 : '';
 
-            let actionCol = '';
+            const itemsButton = `
+                <button
+                    type="button"
+                    onclick="openItemsModal(${Number(item.id)}, ${JSON.stringify(String(item.status || ''))})"
+                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-700 text-xs font-semibold transition cursor-pointer"
+                    title="Lihat atau kelola detail item obat"
+                >
+                    Item Obat (${itemsCount})
+                </button>
+            `;
+
+            let extraActions = '';
             if (CAN_MANAGE) {
                 if (isEditable) {
                     const editDisabledAttr = !HAS_URGENSI ? 'disabled title="Master urgensi belum tersedia"' : 'title="Ubah tingkat urgensi"';
@@ -601,35 +753,29 @@
                         ? 'bg-teal-50 hover:bg-teal-100 border-teal-200 text-teal-700 cursor-pointer'
                         : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed';
 
-                    actionCol = `
-                        <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-2">
-                                <button
-                                    type="button"
-                                    onclick="openEditModal(${Number(item.id)}, ${Number(item.urgensi_id)})"
-                                    ${editDisabledAttr}
-                                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${editBtnClass}"
-                                >
-                                    Ubah Urgensi
-                                </button>
-                                <button
-                                    type="button"
-                                    onclick="openDeleteModal(${Number(item.id)})"
-                                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-semibold transition cursor-pointer"
-                                    title="Hapus permintaan"
-                                >
-                                    Hapus
-                                </button>
-                            </div>
-                        </td>
+                    extraActions = `
+                        <button
+                            type="button"
+                            onclick="openEditModal(${Number(item.id)}, ${Number(item.urgensi_id)})"
+                            ${editDisabledAttr}
+                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${editBtnClass}"
+                        >
+                            Ubah Urgensi
+                        </button>
+                        <button
+                            type="button"
+                            onclick="openDeleteModal(${Number(item.id)})"
+                            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-semibold transition cursor-pointer"
+                            title="Hapus permintaan"
+                        >
+                            Hapus
+                        </button>
                     `;
                 } else {
-                    actionCol = `
-                        <td class="px-6 py-4 text-center">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-400 text-[11px] font-medium" title="Hanya permintaan berstatus diajukan yang dapat diubah atau dihapus">
-                                Terkunci
-                            </span>
-                        </td>
+                    extraActions = `
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-400 text-[11px] font-medium" title="Hanya permintaan berstatus diajukan yang dapat diubah atau dihapus">
+                            Terkunci
+                        </span>
                     `;
                 }
             }
@@ -647,7 +793,12 @@
                         <span class="line-clamp-2">${item.catatan ? escapeHtml(item.catatan) : '<span class="text-slate-400">&mdash;</span>'}</span>
                     </td>
                     <td class="px-6 py-4 text-xs font-mono text-slate-500 whitespace-nowrap">${formatDateTime(item.created_at)}</td>
-                    ${actionCol}
+                    <td class="px-6 py-4">
+                        <div class="flex items-center justify-center gap-2 flex-wrap">
+                            ${itemsButton}
+                            ${extraActions}
+                        </div>
+                    </td>
                 </tr>
             `;
         }).join('');
@@ -670,47 +821,201 @@
             renderPermintaanTable(permintaanCache);
         } catch (error) {
             loadingEl.classList.add('hidden');
-            document.getElementById('permintaan-error-message').textContent = error.message;
+            document.getElementById('permintaan-error-message').textContent = error.message || 'Gagal memuat daftar permintaan darurat.';
             errorEl.classList.remove('hidden');
-            document.getElementById('table-count-badge').textContent = '(Gagal memuat)';
+        }
+    }
+
+    async function openItemsModal(permintaanId, status) {
+        activeItemsPermintaanId = permintaanId;
+        activeItemsEditable = CAN_MANAGE && String(status || '').toLowerCase() === 'diajukan';
+        hideItemsModalAlert();
+
+        document.getElementById('modal-items-title').textContent = `Detail Item Obat — Permintaan #${permintaanId}`;
+        document.getElementById('items-modal-status-badge').innerHTML = renderStatusBadge(status);
+
+        const addForm = document.getElementById('form-add-item');
+        if (addForm) {
+            addForm.reset();
+            document.getElementById('item-satuan').value = 'Box';
+            document.getElementById('item-qty').value = '1';
+            if (activeItemsEditable) {
+                addForm.classList.remove('hidden');
+            } else {
+                addForm.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('modal-items-permintaan').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        await loadPermintaanItems(permintaanId);
+    }
+
+    function closeItemsModal() {
+        document.getElementById('modal-items-permintaan').classList.add('hidden');
+        document.body.style.overflow = '';
+        activeItemsPermintaanId = null;
+    }
+
+    async function loadPermintaanItems(permintaanId) {
+        const loadingEl = document.getElementById('items-loading');
+        const emptyEl = document.getElementById('items-empty');
+        const wrapperEl = document.getElementById('items-table-wrapper');
+        const tbody = document.getElementById('items-table-body');
+
+        loadingEl.classList.remove('hidden');
+        emptyEl.classList.add('hidden');
+        wrapperEl.classList.add('hidden');
+
+        try {
+            const result = await apiFetch(`${PERMINTAAN_API_URL}/${encodeURIComponent(permintaanId)}/items`);
+            const items = Array.isArray(result && result.data) ? result.data : [];
+            loadingEl.classList.add('hidden');
+
+            if (!items.length) {
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+
+            wrapperEl.classList.remove('hidden');
+            tbody.innerHTML = items.map(item => {
+                const qtyCell = activeItemsEditable
+                    ? `<input type="number" id="qty-input-${Number(item.id)}" min="1" max="1000000" value="${Number(item.qty)}" class="w-24 px-2.5 py-1 rounded-lg border border-slate-200 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500">`
+                    : `<span class="font-semibold text-slate-800">${escapeHtml(item.qty)}</span>`;
+
+                let actionCell = '';
+                if (CAN_MANAGE) {
+                    actionCell = activeItemsEditable
+                        ? `<td class="px-4 py-2.5 text-center">
+                               <div class="flex items-center justify-center gap-1.5">
+                                   <button type="button" onclick="updatePermintaanItemQty(${Number(item.id)})" class="px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 text-xs font-semibold cursor-pointer">Simpan</button>
+                                   <button type="button" onclick="deletePermintaanItem(${Number(item.id)})" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                               </div>
+                           </td>`
+                        : `<td class="px-4 py-2.5 text-center text-[11px] text-slate-400">Terkunci</td>`;
+                }
+
+                return `
+                    <tr>
+                        <td class="px-4 py-2.5 font-medium text-slate-800">${escapeHtml(item.nama_obat)}</td>
+                        <td class="px-4 py-2.5 text-slate-600">${escapeHtml(item.satuan)}</td>
+                        <td class="px-4 py-2.5">${qtyCell}</td>
+                        ${actionCell}
+                    </tr>
+                `;
+            }).join('');
+        } catch (error) {
+            loadingEl.classList.add('hidden');
+            showItemsModalAlert('error', error.message || 'Gagal memuat detail item obat.');
+        }
+    }
+
+    async function submitAddPermintaanItem(event) {
+        event.preventDefault();
+        if (!activeItemsPermintaanId || !activeItemsEditable) return;
+        hideItemsModalAlert();
+
+        const namaObat = document.getElementById('item-nama_obat').value.trim();
+        const satuan = document.getElementById('item-satuan').value.trim();
+        const qty = Number(document.getElementById('item-qty').value);
+        const btn = document.getElementById('btn-submit-add-item');
+        btn.disabled = true;
+
+        try {
+            const result = await apiFetch(`${PERMINTAAN_API_URL}/${encodeURIComponent(activeItemsPermintaanId)}/items`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    nama_obat: namaObat,
+                    satuan: satuan || 'Box',
+                    qty: qty,
+                }),
+            });
+
+            document.getElementById('item-nama_obat').value = '';
+            document.getElementById('item-qty').value = '1';
+            showItemsModalAlert('success', (result && result.message) || 'Item obat berhasil ditambahkan.');
+            await loadPermintaanItems(activeItemsPermintaanId);
+            await loadPermintaanList();
+        } catch (error) {
+            const firstValidation = error.payload && error.payload.errors
+                ? Object.values(error.payload.errors)[0][0]
+                : null;
+            showItemsModalAlert('error', firstValidation || error.message || 'Gagal menambahkan item obat.');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function updatePermintaanItemQty(itemId) {
+        if (!activeItemsPermintaanId || !activeItemsEditable) return;
+        hideItemsModalAlert();
+
+        const inputEl = document.getElementById(`qty-input-${itemId}`);
+        const qty = inputEl ? Number(inputEl.value) : 0;
+
+        try {
+            const result = await apiFetch(`${PERMINTAAN_API_URL}/items/${encodeURIComponent(itemId)}`, {
+                method: 'PUT',
+                body: JSON.stringify({ qty: qty }),
+            });
+            showItemsModalAlert('success', (result && result.message) || 'Qty item obat berhasil diperbarui.');
+            await loadPermintaanItems(activeItemsPermintaanId);
+        } catch (error) {
+            const firstValidation = error.payload && error.payload.errors
+                ? Object.values(error.payload.errors)[0][0]
+                : null;
+            showItemsModalAlert('error', firstValidation || error.message || 'Gagal memperbarui qty item obat.');
+        }
+    }
+
+    async function deletePermintaanItem(itemId) {
+        if (!activeItemsPermintaanId || !activeItemsEditable) return;
+        hideItemsModalAlert();
+
+        try {
+            const result = await apiFetch(`${PERMINTAAN_API_URL}/items/${encodeURIComponent(itemId)}`, {
+                method: 'DELETE',
+            });
+            showItemsModalAlert('success', (result && result.message) || 'Item obat berhasil dihapus.');
+            await loadPermintaanItems(activeItemsPermintaanId);
+            await loadPermintaanList();
+        } catch (error) {
+            showItemsModalAlert('error', error.message || 'Gagal menghapus item obat.');
         }
     }
 
     function clearModalErrors(prefix) {
-        const generalErr = document.getElementById(`${prefix}-form-error`);
-        if (generalErr) {
-            generalErr.textContent = '';
-            generalErr.classList.add('hidden');
+        const formErr = document.getElementById(`${prefix}-form-error`);
+        if (formErr) {
+            formErr.textContent = '';
+            formErr.classList.add('hidden');
         }
-        ['urgensi_id', 'catatan'].forEach(field => {
-            const fieldErr = document.getElementById(`${prefix}-${field}-error`);
-            if (fieldErr) {
-                fieldErr.textContent = '';
-                fieldErr.classList.add('hidden');
+        document.querySelectorAll(`[id^="${prefix}-"][id$="-error"]`).forEach(el => {
+            if (el.id !== `${prefix}-form-error`) {
+                el.textContent = '';
+                el.classList.add('hidden');
             }
         });
     }
 
     function displayValidationErrors(prefix, error) {
-        const payload = error.payload || {};
-        const fieldErrors = payload.errors || {};
-        let hasFieldError = false;
+        const errors = error && error.payload && error.payload.errors ? error.payload.errors : null;
+        if (errors) {
+            Object.entries(errors).forEach(([field, messages]) => {
+                const fieldErr = document.getElementById(`${prefix}-${field}-error`);
+                if (fieldErr && Array.isArray(messages) && messages.length) {
+                    fieldErr.textContent = messages[0];
+                    fieldErr.classList.remove('hidden');
+                }
+            });
+            return;
+        }
 
-        Object.entries(fieldErrors).forEach(([field, messages]) => {
-            const fieldErrEl = document.getElementById(`${prefix}-${field}-error`);
-            if (fieldErrEl && Array.isArray(messages) && messages.length > 0) {
-                fieldErrEl.textContent = messages[0];
-                fieldErrEl.classList.remove('hidden');
-                hasFieldError = true;
-            }
-        });
-
-        if (!hasFieldError) {
-            const generalErr = document.getElementById(`${prefix}-form-error`);
-            if (generalErr) {
-                generalErr.textContent = error.message || 'Terjadi kesalahan saat memproses permintaan.';
-                generalErr.classList.remove('hidden');
-            }
+        const formErr = document.getElementById(`${prefix}-form-error`);
+        if (formErr) {
+            formErr.textContent = (error && error.message) ? error.message : 'Terjadi kesalahan saat menyimpan data.';
+            formErr.classList.remove('hidden');
         }
     }
 
@@ -734,11 +1039,10 @@
         if (!CAN_MANAGE || !HAS_URGENSI) return;
 
         clearModalErrors('create');
-        const submitBtn = document.getElementById('btn-submit-create');
-        submitBtn.disabled = true;
-
         const urgensiId = document.getElementById('create-urgensi_id').value;
         const catatanRaw = document.getElementById('create-catatan').value.trim();
+        const submitBtn = document.getElementById('btn-submit-create');
+        submitBtn.disabled = true;
 
         try {
             const result = await apiFetch(PERMINTAAN_API_URL, {
@@ -847,6 +1151,7 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
+            closeItemsModal();
             closeCreateModal();
             closeEditModal();
             closeDeleteModal();

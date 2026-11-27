@@ -44,7 +44,7 @@ class PermintaanController extends Controller
             return $guardError;
         }
 
-        $query = Permintaan::with(self::API_RELATIONS)->latest();
+        $query = Permintaan::with(self::API_RELATIONS)->withCount('items')->latest();
 
         if ($user->hasRole('faskes')) {
             $query->where('faskes_id', $user->faskes_id);
@@ -78,7 +78,7 @@ class PermintaanController extends Controller
             'catatan' => $validated['catatan'] ?? null,
         ]);
 
-        $permintaan->load(self::API_RELATIONS);
+        $permintaan->load(self::API_RELATIONS)->loadCount('items');
 
         return response()->json([
             'status' => 'success',
@@ -154,7 +154,7 @@ class PermintaanController extends Controller
             'urgensi_id' => $request->validated('urgensi_id'),
         ]);
 
-        $permintaan->load(self::API_RELATIONS);
+        $permintaan->load(self::API_RELATIONS)->loadCount('items');
 
         return response()->json([
             'status' => 'success',
