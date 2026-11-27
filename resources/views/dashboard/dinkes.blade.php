@@ -20,23 +20,6 @@
                     Anda berhasil masuk melalui otentikasi peran <span class="font-semibold text-emerald-700">Dinas Kesehatan (Dinkes)</span>.
                 </p>
             </div>
-
-            <!-- Tombol Keluar Langsung di Banner -->
-            <div class="flex items-center gap-3">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button
-                        type="submit"
-                        onclick="return confirm('Apakah Anda yakin ingin keluar?')"
-                        class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow transition flex items-center gap-2 cursor-pointer"
-                    >
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        <span>Uji Keluar (Logout)</span>
-                    </button>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -102,23 +85,6 @@
                     <span class="text-slate-400 block text-[11px]">Proteksi Hak Akses:</span>
                     <span class="text-slate-600">Hanya dapat mengakses area Dinas Kesehatan</span>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Banner Penjelasan Kepatuhan Instruksi -->
-    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 text-slate-700">
-        <div class="flex items-start gap-3">
-            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <div>
-                <h4 class="text-sm font-bold text-slate-900">Catatan Implementasi Fitur Sesuai Permintaan</h4>
-                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                    Sesuai instruksi spesifik Anda: <em>"saya hanya ingin anda untuk membuat fitur login dan logout tanpa mengerjakan apapun yang lainnya"</em>, sistem hanya memproses autentikasi <strong>Login</strong> dan <strong>Logout</strong>. Seluruh modul lain (PBI-01 s/d PBI-21) sengaja tidak dikerjakan sesuai batasan ruang lingkup yang Anda tetapkan.
-                </p>
             </div>
         </div>
     </div>

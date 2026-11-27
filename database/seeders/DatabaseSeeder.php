@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             WilayahSeeder::class,
             UserSeeder::class,
             InboxSeeder::class,
+            KendaraanSeeder::class,
         ]);
     }
 }
