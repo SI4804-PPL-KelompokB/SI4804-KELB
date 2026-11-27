@@ -45,3 +45,24 @@ Route::middleware('auth')->group(function () {
         Route::delete('/permintaan/{id}', [PermintaanController::class, 'destroy']);
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| PBI-21: Manajemen Pesan Internal / Inbox Faskes (Briantara Pradhipta)
+|--------------------------------------------------------------------------
+| Sesuai Proposal Tabel 5.1 & F22:
+|   C: Kirim pesan baru          (POST /api/inbox)
+|   R: Lihat daftar inbox        (GET  /api/inbox)
+|   R: Lihat detail pesan        (GET  /api/inbox/{id})
+|   U: Tandai read/unread        (PUT  /api/inbox/{id})
+|   D: Hapus pesan               (DELETE /api/inbox/{id})
+|   Helper: Daftar penerima      (GET  /api/inbox/recipients)
+*/
+Route::middleware('auth')->group(function () {
+    Route::get('/inbox', [\App\Http\Controllers\Api\InboxController::class, 'index']);
+    Route::post('/inbox', [\App\Http\Controllers\Api\InboxController::class, 'store']);
+    Route::get('/inbox/recipients', [\App\Http\Controllers\Api\InboxController::class, 'recipients']);
+    Route::get('/inbox/{id}', [\App\Http\Controllers\Api\InboxController::class, 'show']);
+    Route::put('/inbox/{id}', [\App\Http\Controllers\Api\InboxController::class, 'update']);
+    Route::delete('/inbox/{id}', [\App\Http\Controllers\Api\InboxController::class, 'destroy']);
+});

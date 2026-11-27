@@ -63,6 +63,33 @@ class User extends Authenticatable
     }
 
     /**
+     * Relasi ke pesan masuk (inbox) yang diterima pengguna (PBI-21)
+     */
+    public function inboxReceived(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Inbox::class, 'penerima_id');
+    }
+
+    /**
+     * Relasi ke pesan keluar yang dikirim oleh pengguna (PBI-21)
+     */
+    public function inboxSent(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Inbox::class, 'pengirim_id');
+    }
+
+    /**
+     * Mendapatkan jumlah pesan yang belum dibaca pengguna (PBI-21)
+     */
+    public function unreadInboxCount(): int
+    {
+        return $this->inboxReceived()
+            ->where('deleted_by_penerima', false)
+            ->where('is_read', false)
+            ->count();
+    }
+
+    /**
      * Memeriksa apakah pengguna memiliki peran tertentu
      * Sesuai rancangan Class Diagram subbab 4.4: +hasRole(r)
      */

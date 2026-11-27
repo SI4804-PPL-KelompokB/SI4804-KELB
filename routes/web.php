@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InboxController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\WilayahController;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 | Web Routes - MedStock.id
 |--------------------------------------------------------------------------
 | Autentikasi pengguna (Login/Logout) dan antarmuka Web untuk PBI yang telah
-| diimplementasikan (PBI-01: Wilayah, PBI-07: Permintaan Darurat, PBI-14: Kendaraan).
+| diimplementasikan (PBI-01, PBI-07, PBI-14, PBI-21).
 */
 
 // Redirect root ke dashboard jika login, atau ke formulir login jika belum
@@ -92,4 +93,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/permintaan', [PermintaanController::class, 'index'])
         ->middleware('role:faskes,dinkes,admin')
         ->name('permintaan.index');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-21: Manajemen Pesan Internal / Inbox Faskes (Briantara Pradhipta)
+    |--------------------------------------------------------------------------
+    | Semua pengguna terautentikasi dapat membaca dan mengirim pesan internal.
+    */
+    Route::get('/inbox', [InboxController::class, 'index'])->name('inbox.index');
+    Route::post('/inbox', [InboxController::class, 'store'])->name('inbox.store');
+    Route::put('/inbox/{id}', [InboxController::class, 'update'])->name('inbox.update');
+    Route::delete('/inbox/{id}', [InboxController::class, 'destroy'])->name('inbox.destroy');
 });
