@@ -27,9 +27,9 @@ class WilayahController extends Controller
         $wilayah = Wilayah::orderBy('nama_wilayah')->get();
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Daftar wilayah berhasil diambil.',
-            'data'    => $wilayah,
+            'data' => $wilayah,
         ]);
     }
 
@@ -43,9 +43,9 @@ class WilayahController extends Controller
         $wilayah = Wilayah::create($request->validated());
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => "Wilayah \"{$wilayah->nama_wilayah}\" berhasil ditambahkan.",
-            'data'    => $wilayah,
+            'data' => $wilayah,
         ], 201);
     }
 
@@ -58,17 +58,17 @@ class WilayahController extends Controller
     {
         $wilayah = Wilayah::find($id);
 
-        if (!$wilayah) {
+        if (! $wilayah) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Wilayah dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Detail wilayah berhasil diambil.',
-            'data'    => $wilayah,
+            'data' => $wilayah,
         ]);
     }
 
@@ -81,9 +81,9 @@ class WilayahController extends Controller
     {
         $wilayah = Wilayah::find($id);
 
-        if (!$wilayah) {
+        if (! $wilayah) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Wilayah dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
@@ -91,9 +91,9 @@ class WilayahController extends Controller
         $wilayah->update($request->validated());
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => "Wilayah \"{$wilayah->nama_wilayah}\" berhasil diperbarui.",
-            'data'    => $wilayah->fresh(),
+            'data' => $wilayah->fresh(),
         ]);
     }
 
@@ -107,9 +107,9 @@ class WilayahController extends Controller
     {
         $wilayah = Wilayah::find($id);
 
-        if (!$wilayah) {
+        if (! $wilayah) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Wilayah dengan ID {$id} tidak ditemukan.",
             ], 404);
         }
@@ -117,7 +117,7 @@ class WilayahController extends Controller
         // Proteksi referensi: cegah penghapusan jika wilayah masih dipakai
         if ($wilayah->isReferenced()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => "Wilayah \"{$wilayah->nama_wilayah}\" tidak dapat dihapus karena masih digunakan oleh satu atau lebih fasilitas kesehatan.",
             ], 422);
         }
@@ -126,9 +126,9 @@ class WilayahController extends Controller
         $wilayah->delete();
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => "Wilayah \"{$namaWilayah}\" berhasil dihapus.",
-            'data'    => null,
+            'data' => null,
         ]);
     }
 }

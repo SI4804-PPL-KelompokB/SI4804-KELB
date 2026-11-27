@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | Web Routes - MedStock.id
 |--------------------------------------------------------------------------
 | Autentikasi pengguna (Login/Logout) dan antarmuka Web untuk PBI yang telah
-| diimplementasikan (PBI-01: Manajemen Data Wilayah, PBI-07: Permintaan Darurat).
+| diimplementasikan (PBI-01: Wilayah, PBI-07: Permintaan Darurat, PBI-14: Kendaraan).
 */
 
 // Redirect root ke dashboard jika login, atau ke formulir login jika belum
@@ -51,6 +52,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI-14: CRUD Data Kendaraan / Kurir Internal (Khusus Penyedia)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:penyedia')->prefix('penyedia')->name('penyedia.')->group(function () {
+        Route::get('/kendaraan', [KendaraanController::class, 'index'])->name('kendaraan.index');
+        Route::get('/kendaraan/create', [KendaraanController::class, 'create'])->name('kendaraan.create');
+        Route::post('/kendaraan', [KendaraanController::class, 'store'])->name('kendaraan.store');
+        Route::get('/kendaraan/{kendaraan}/edit', [KendaraanController::class, 'edit'])->name('kendaraan.edit');
+        Route::put('/kendaraan/{kendaraan}', [KendaraanController::class, 'update'])->name('kendaraan.update');
+        Route::delete('/kendaraan/{kendaraan}', [KendaraanController::class, 'destroy'])->name('kendaraan.destroy');
+    });
 
     /*
     |--------------------------------------------------------------------------

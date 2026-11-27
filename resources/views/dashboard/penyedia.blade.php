@@ -21,11 +21,43 @@
                     Pusat informasi akun <span class="font-semibold text-teal-700">Penyedia Obat</span> pada jaringan distribusi darurat MedStock.id.
                 </p>
             </div>
+
+            <div class="flex items-center gap-3 shrink-0">
+                <a
+                    href="{{ route('penyedia.kendaraan.index') }}"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs sm:text-sm font-semibold shadow-xs hover:shadow transition"
+                >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    <span>Kelola Kendaraan / Kurir</span>
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Operational Module Hub -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a
+            href="{{ route('penyedia.kendaraan.index') }}"
+            class="group bg-white rounded-2xl p-6 border border-slate-200/80 hover:border-teal-300 shadow-2xs hover:shadow-sm transition flex items-start gap-4"
+        >
+            <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 group-hover:bg-teal-600 group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-2">
+                    <h2 class="text-base font-bold text-slate-900 group-hover:text-teal-700 transition">Data Kendaraan / Kurir</h2>
+                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">Aktif</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Kelola armada pengiriman: tambah, lihat, edit plat nomor, dan hapus kurir atau ambulans fasilitas.
+                </p>
+            </div>
+        </a>
+
         <a
             href="{{ route('wilayah.index') }}"
             class="group bg-white rounded-2xl p-6 border border-slate-200/80 hover:border-teal-300 shadow-2xs hover:shadow-sm transition flex items-start gap-4"
@@ -46,20 +78,6 @@
                 </p>
             </div>
         </a>
-
-        <div class="bg-slate-50/80 rounded-2xl p-6 border border-dashed border-slate-200 flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center shrink-0">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-            </div>
-            <div>
-                <h2 class="text-base font-bold text-slate-700">Modul Operasional Penyedia</h2>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Modul pembaruan stok gudang dan pemenuhan surat jalan pengiriman obat akan ditambahkan pada tahap berikutnya.
-                </p>
-            </div>
-        </div>
     </div>
 
     <!-- Informasi Status Autentikasi Pengguna & Sesi Aktif -->
